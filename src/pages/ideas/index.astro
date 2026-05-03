@@ -68,6 +68,7 @@ const categoryFacets = [
         const match = cat === 'all' || w.dataset.cat === cat;
         w.classList.toggle('hidden', !match);
       });
+      (window as any).gtag?.('event', 'idea_filter', { category: cat });
     });
   });
 </script>

@@ -73,6 +73,7 @@ const allTags = Array.from(new Set(posts.flatMap(p => p.data.tags))).sort();
         const match = tag === 'all' || tags.includes(tag!);
         w.classList.toggle('hidden', !match);
       });
+      (window as any).gtag?.('event', 'blog_filter', { tag });
     });
   });
 </script>

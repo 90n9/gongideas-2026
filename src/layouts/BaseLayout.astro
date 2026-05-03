@@ -16,6 +16,9 @@ const {
 } = Astro.props;
 
 const fullTitle = title.includes('GongIdeas') ? title : `${title} — GongIdeas`;
+
+const GA_ID = 'G-M7LKC1PBD5';
+const enableGA = import.meta.env.PROD;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +37,18 @@ const fullTitle = title.includes('GongIdeas') ? title : `${title} — GongIdeas`
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
+  {enableGA && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+      <script is:inline define:vars={{ GA_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID);
+      </script>
+    </>
+  )}
 </head>
 <body>
   <HudBar />

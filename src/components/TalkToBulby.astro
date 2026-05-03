@@ -287,11 +287,16 @@ const dynamicData = {
       `;
     }
 
+    function track(action, params) {
+      try { window.gtag && window.gtag('event', 'bulby_interact', { action, ...(params || {}) }); } catch (_) {}
+    }
+
     function startGame() {
       const game = games[Math.floor(Math.random() * games.length)];
       state = { view: 'game', gameId: game.id, stepId: 'start', scores: {} };
       setSpeaker(game.title);
       setMood('▶ playing');
+      track('game_start', { game: game.id });
       renderGameStep();
     }
 
@@ -323,6 +328,7 @@ const dynamicData = {
       const game = currentGame();
       setSpeaker(game ? game.title : 'BULBY');
       setMood('✺ THE END');
+      track('game_end', { game: game?.id, ending: step.tag });
       contentEl.innerHTML = `
         <div class="dialog-progress">// ENDING — ${escapeHTML(game?.title ?? '')}</div>
         <div class="dialog-text">${escapeHTML(step.text)}</div>
@@ -368,6 +374,7 @@ const dynamicData = {
         const idx = Number(t.dataset.intro);
         const choice = intro.choices[idx];
         if (!choice) return;
+        track('intro_choice', { choice: choice.next });
         if (choice.next === '__game') return startGame();
         return renderFaqNode(choice.next);
       }
