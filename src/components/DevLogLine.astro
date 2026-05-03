@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  /** Reference date to compute "2D AGO" labels against. Defaults to today. */
+  now?: Date;
+}
+const { post, now = new Date() } = Astro.props;
+const { data, id } = post;
+
+function relLabel(d: Date, ref: Date): string {
+  const ms = ref.getTime() - d.getTime();
+  const day = 1000 * 60 * 60 * 24;
+  const days = Math.floor(ms / day);
+  if (days < 1) return 'TODAY';
+  if (days < 7) return `${days}D AGO`;
+  if (days < 30) return `${Math.floor(days / 7)}W AGO`;
+  if (days < 365) return `${Math.floor(days / 30)}MO AGO`;
+  return `${Math.floor(days / 365)}Y AGO`;
+}
+---
+<a class="log-line" href={`/blog/${id}/`}>
+  <span class="date">{relLabel(data.date, now)}</span>
+  <span class="title">{data.title}</span>
+  <span class="tags">
+    {data.tags.map(tag => <span class="tag">#{tag}</span>)}
+  </span>
+</a>

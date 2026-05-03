@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import IdeaCard from '../../components/IdeaCard.astro';
+import TalkToBulby from '../../components/TalkToBulby.astro';
+
+const ideas = (await getCollection('ideas'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const categoryFacets = [
+  { id: 'all', label: 'ALL' },
+  { id: 'ai-coding', label: 'AI CODING' },
+  { id: 'ai-automation', label: 'AI AUTOMATION' },
+  { id: 'ai-video', label: 'AI VIDEO' },
+  { id: 'game-dev', label: 'GAME DEV' },
+];
+---
+<BaseLayout title="Ideas — All Experiments" description="Every idea in Gong's lab — AI coding, automation, video, and game-dev experiments." active="ideas">
+
+  <section style="padding-top: 56px;">
+    <div class="container">
+      <SectionHead
+        title="IDEAS · ALL EXPERIMENTS"
+        meta={`// ${ideas.length} total · sorted by date desc`}
+      />
+
+      <div class="filter-row" id="filter-row" role="group" aria-label="Filter by category">
+        {categoryFacets.map((f, i) => (
+          <button class="chip" data-cat={f.id} aria-pressed={i === 0 ? 'true' : 'false'} type="button">
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="idea-grid" id="idea-grid">
+        {ideas.map(idea => (
+          <div class="idea-wrap" data-cat={idea.data.category}>
+            <IdeaCard idea={idea} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>
+
+<style>
+  .idea-wrap { display: contents; }
+  .idea-wrap.hidden { display: none; }
+  /* fall back to grid display when wrappers are visible */
+  #idea-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  @media (max-width: 1024px) { #idea-grid { grid-template-columns: 1fr 1fr; gap: 22px; } }
+  @media (max-width: 640px)  { #idea-grid { grid-template-columns: 1fr; gap: 20px; } }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('#filter-row .chip');
+  const wraps = document.querySelectorAll<HTMLElement>('#idea-grid .idea-wrap');
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cat = chip.dataset.cat;
+      chips.forEach(c => c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'));
+      wraps.forEach(w => {
+        const match = cat === 'all' || w.dataset.cat === cat;
+        w.classList.toggle('hidden', !match);
+      });
+    });
+  });
+</script>

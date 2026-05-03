@@ -1,0 +1,390 @@
+---
+import BulbySprite from './BulbySprite.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  /** When false, renders without the section wrapper / heading (useful inside posts). */
+  withHeading?: boolean;
+  latestWip?: { title: string; href: string } | null;
+  latestPost?: { title: string; href: string } | null;
+}
+const {
+  withHeading = true,
+  latestWip = null,
+  latestPost = null,
+} = Astro.props;
+
+const dynamicData = {
+  wip: latestWip,
+  post: latestPost,
+};
+---
+<section id="talk">
+  <div class="container">
+    {withHeading && <SectionHead title="TALK TO BULBY" meta="// > awaiting input" marker="pink" />}
+    <div class="talk-grid">
+      <div class="talk-bulby js-talk-bulby" data-bulby-mood="glowing">
+        <div class="bulby-fx-stage">
+          <BulbySprite width={120} height={150} />
+          <div class="bulby-fx" aria-hidden="true">
+            <span class="fx" data-fx="proud"    style="--x:50%;--y:-6px;     --d:0s;   --rot:0deg">★</span>
+            <span class="fx" data-fx="proud"    style="--x:24%;--y:8px;      --d:.4s;  --rot:0deg">✦</span>
+            <span class="fx" data-fx="proud"    style="--x:78%;--y:6px;      --d:.8s;  --rot:0deg">✦</span>
+            <span class="fx" data-fx="building" style="--x:18%;--y:34%;      --d:0s;   --rot:0deg">⚙</span>
+            <span class="fx" data-fx="building" style="--x:84%;--y:60%;      --d:.6s;  --rot:0deg">⚙</span>
+            <span class="fx" data-fx="building" style="--x:74%;--y:18%;      --d:.3s;  --rot:0deg">✦</span>
+            <span class="fx" data-fx="writing"  style="--x:82%;--y:30%;      --d:0s;   --rot:18deg">✎</span>
+            <span class="fx" data-fx="writing"  style="--x:14%;--y:62%;      --d:.6s;  --rot:0deg">~</span>
+            <span class="fx" data-fx="playing"  style="--x:14%;--y:24%;      --d:0s;   --rot:0deg">▶</span>
+            <span class="fx" data-fx="playing"  style="--x:84%;--y:60%;      --d:.25s; --rot:0deg">A</span>
+            <span class="fx" data-fx="end"      style="--x:18%;--y:14%;      --d:0s;   --rot:0deg">✺</span>
+            <span class="fx" data-fx="end"      style="--x:82%;--y:18%;      --d:.4s;  --rot:0deg">✦</span>
+            <span class="fx" data-fx="end"      style="--x:50%;--y:-4px;     --d:.8s;  --rot:0deg">★</span>
+            <span class="fx" data-fx="end"      style="--x:30%;--y:74%;      --d:1.2s; --rot:0deg">✺</span>
+          </div>
+        </div>
+        <div class="name">BULBY</div>
+        <div class="bulby-mood js-bulby-mood">// mood: ✦ glowing</div>
+      </div>
+
+      <div class="dialog-box js-bulby-dialog">
+        <div class="dialog-name"><span class="arrow">▶</span><span class="js-dialog-speaker">BULBY</span><span>:</span></div>
+        <div class="dialog-content js-bulby-content"><!-- rendered by JS --></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ dynamicData }}>
+  (function () {
+    const root = document.querySelector('.js-bulby-dialog');
+    if (!root) return;
+    const contentEl = root.querySelector('.js-bulby-content');
+    const moodEl = document.querySelector('.js-bulby-mood');
+    const speakerEl = root.querySelector('.js-dialog-speaker');
+
+    const wipTitle = dynamicData.wip?.title ?? null;
+    const wipHref = dynamicData.wip?.href ?? '/ideas/';
+    const postTitle = dynamicData.post?.title ?? null;
+    const postHref = dynamicData.post?.href ?? '/blog/';
+
+    // ======== FAQ TREE ========
+    const intro = {
+      mood: '✦ glowing',
+      text: 'Hey traveler — what do you want to know?',
+      choices: [
+        { label: 'Who is Gong?', next: 'who' },
+        { label: 'What are you building?', next: 'wip' },
+        { label: 'Show me a recent post.', next: 'post' },
+        { label: 'Play a game with me!', next: '__game' },
+      ],
+    };
+
+    const nodes = {
+      who: {
+        mood: '★ proud',
+        text: "Gong is an indie builder with tons of ideas. Finishing them is the hard part. He's hoping AI can help him ship more of them.",
+        cta: { href: '/about/', label: '[ READ FULL BIO ]' },
+      },
+      wip: {
+        mood: '⚙ building',
+        text: wipTitle
+          ? `Right now: "${wipTitle}". Slowly leveling it up.`
+          : "Between quests at the moment. Ideas are stacking up — peek the list.",
+        cta: { href: wipHref, label: wipTitle ? '[ SEE THE QUEST ]' : '[ ALL IDEAS ]' },
+      },
+      post: {
+        mood: '✎ writing',
+        text: postTitle
+          ? `Latest log: "${postTitle}". Fresh from the dev journal.`
+          : "Blog is warming up. New entries arrive roughly weekly.",
+        cta: { href: postHref, label: postTitle ? '[ READ THE LOG ]' : '[ BROWSE BLOG ]' },
+      },
+    };
+
+    // ======== MINI GAMES ========
+    const games = [
+      {
+        id: 'debug',
+        title: 'DEBUG THE BOSS',
+        steps: {
+          start: {
+            text: 'A wild 500 ERROR appears in production!',
+            choices: [
+              { label: 'Read the logs.', next: 's_logs' },
+              { label: 'Restart the server.', next: 's_restart' },
+              { label: 'console.log everything.', next: 's_console' },
+            ],
+          },
+          s_logs: {
+            text: "Logs say: 'undefined is not a function'.",
+            choices: [
+              { label: 'Add a null check.', next: 'e_hero' },
+              { label: 'Wrap it in try/catch.', next: 'e_tape' },
+            ],
+          },
+          s_restart: {
+            text: 'Server is alive. Bug is still alive too.',
+            choices: [
+              { label: 'Read the logs now.', next: 'e_late' },
+              { label: 'Restart again.', next: 'e_loop' },
+            ],
+          },
+          s_console: {
+            text: 'Console reveals a tiny typo.',
+            choices: [
+              { label: 'Fix it quietly.', next: 'e_lucky' },
+              { label: 'Push to prod.', next: 'e_chaos' },
+            ],
+          },
+          e_hero: { ending: true, text: 'Bug squashed. +50 XP.', tag: '🏆 SENIOR DEV unlocked.' },
+          e_tape: { ending: true, text: 'Bug hidden, not fixed.', tag: '🩹 DUCT TAPE ENGINEER.' },
+          e_late: { ending: true, text: 'Saved. Slowly. Standup will sting.', tag: '⏰ LATE HERO.' },
+          e_loop: { ending: true, text: 'It works. It works. ...wait, no.', tag: '♻️ INFINITE RESTART.' },
+          e_lucky: { ending: true, text: 'One typo. Two hours. Classic.', tag: '🍀 LUCKY DEV.' },
+          e_chaos: { ending: true, text: 'Production is on fire. Run.', tag: '🔥 CHAOS AGENT.' },
+        },
+      },
+      {
+        id: 'indie',
+        title: 'INDIE QUEST',
+        steps: {
+          start: {
+            text: 'Bulby spots a SHINY IDEA. What now?',
+            choices: [
+              { label: 'Build the MVP tonight.', next: 's_build' },
+              { label: 'Add it to the notes app.', next: 's_notes' },
+              { label: 'Tweet about it first.', next: 's_tweet' },
+            ],
+          },
+          s_build: {
+            text: "It's 3am. The MVP works.",
+            choices: [
+              { label: 'Ship it now.', next: 'e_ship' },
+              { label: 'Add one more feature.', next: 'e_creep' },
+            ],
+          },
+          s_notes: {
+            text: 'Notes app: 200 unbuilt ideas inside.',
+            choices: [
+              { label: 'Pick the smallest one.', next: 'e_focus' },
+              { label: 'Start a brand new one.', next: 'e_grave' },
+            ],
+          },
+          s_tweet: {
+            text: '12 likes. Idea is now public.',
+            choices: [
+              { label: 'Race to ship first.', next: 'e_race' },
+              { label: 'Wait for validation.', next: 'e_ghost' },
+            ],
+          },
+          e_ship: { ending: true, text: 'Real users. Real bugs. Real progress.', tag: '🚀 THE SHIPPER.' },
+          e_creep: { ending: true, text: "Six months later. Still 'almost done'.", tag: '🌀 SCOPE CREEP.' },
+          e_focus: { ending: true, text: 'Small project. Finished. Rare.', tag: '🎯 FOCUSED ONE.' },
+          e_grave: { ending: true, text: 'Idea #201 joins the others.', tag: '⚰️ IDEA GRAVEYARD.' },
+          e_race: { ending: true, text: 'First to ship. Barely. Worth it.', tag: '🏁 SPEEDRUNNER.' },
+          e_ghost: { ending: true, text: 'Crowd moved on. Idea is yours alone.', tag: '👻 GHOSTED.' },
+        },
+      },
+      {
+        id: 'quiz',
+        title: 'BUILDER PERSONALITY QUIZ',
+        quiz: true,
+        steps: {
+          start: {
+            text: 'Q1/3 — Friday night. Pick one:',
+            choices: [
+              { label: 'Ship a side project.',  next: 'q2', score: 'shipper' },
+              { label: 'Read a deep paper.',    next: 'q2', score: 'scholar' },
+              { label: 'Sketch new ideas.',     next: 'q2', score: 'dreamer' },
+            ],
+          },
+          q2: {
+            text: 'Q2/3 — Stuck on a hard bug. Pick one:',
+            choices: [
+              { label: 'Ask AI to debug it.',   next: 'q3', score: 'shipper' },
+              { label: 'Read the source code.', next: 'q3', score: 'scholar' },
+              { label: 'Step away. Walk.',      next: 'q3', score: 'dreamer' },
+            ],
+          },
+          q3: {
+            text: 'Q3/3 — One tool only forever. Pick:',
+            choices: [
+              { label: 'VS Code.',  next: '__quiz_end', score: 'shipper' },
+              { label: 'Terminal.', next: '__quiz_end', score: 'scholar' },
+              { label: 'Notion.',   next: '__quiz_end', score: 'dreamer' },
+            ],
+          },
+        },
+        endings: {
+          shipper: { text: 'You are THE SHIPPER. Build first, polish later.', tag: '⚡ +1 VELOCITY.' },
+          scholar: { text: 'You are THE SCHOLAR. Understand it, then own it.', tag: '📚 +1 INSIGHT.' },
+          dreamer: { text: 'You are THE DREAMER. Ideas first, code follows.', tag: '✨ +1 IMAGINATION.' },
+        },
+      },
+    ];
+
+    // ======== STATE ========
+    let state = null;
+
+    const MOOD_KEY = {
+      '✦ glowing':  'glowing',
+      '★ proud':    'proud',
+      '⚙ building': 'building',
+      '✎ writing':  'writing',
+      '▶ playing':  'playing',
+      '✺ THE END':  'end',
+    };
+    const stageEl = document.querySelector('.js-talk-bulby');
+
+    function setMood(m) {
+      const value = m ?? '✦ glowing';
+      if (moodEl) moodEl.textContent = `// mood: ${value}`;
+      if (stageEl) stageEl.dataset.bulbyMood = MOOD_KEY[value] ?? 'glowing';
+    }
+    function setSpeaker(name) {
+      if (speakerEl) speakerEl.textContent = name ?? 'BULBY';
+    }
+
+    function escapeHTML(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      })[c]);
+    }
+
+    function renderChoices(choices, attrName) {
+      const html = choices.map((c, i) => `
+        <button type="button" class="choice-btn" data-${attrName}="${i}">
+          <span class="marker">${String(i + 1).padStart(2, '0')}</span>
+          <span>${escapeHTML(c.label)}</span>
+        </button>
+      `).join('');
+      return `<div class="dialog-choices">${html}</div>`;
+    }
+
+    function renderIntro() {
+      state = { view: 'intro' };
+      setSpeaker('BULBY');
+      setMood(intro.mood);
+      contentEl.innerHTML = `
+        <div class="dialog-text">${escapeHTML(intro.text)}</div>
+        ${renderChoices(intro.choices, 'intro')}
+      `;
+    }
+
+    function renderFaqNode(id) {
+      const node = nodes[id];
+      if (!node) return renderIntro();
+      state = { view: 'faq', id };
+      setSpeaker('BULBY');
+      setMood(node.mood);
+      contentEl.innerHTML = `
+        <div class="dialog-text">${escapeHTML(node.text)}</div>
+        <div class="dialog-cta">
+          <a class="btn primary" href="${node.cta.href}">${escapeHTML(node.cta.label)}</a>
+          <button type="button" class="btn btn-back" data-back="1">[ ← BACK ]</button>
+        </div>
+      `;
+    }
+
+    function startGame() {
+      const game = games[Math.floor(Math.random() * games.length)];
+      state = { view: 'game', gameId: game.id, stepId: 'start', scores: {} };
+      setSpeaker(game.title);
+      setMood('▶ playing');
+      renderGameStep();
+    }
+
+    function currentGame() {
+      return games.find(g => g.id === state.gameId);
+    }
+
+    function renderGameStep() {
+      const game = currentGame();
+      if (!game) return renderIntro();
+      const step = game.steps[state.stepId];
+      if (!step) return renderIntro();
+
+      if (step.ending) {
+        return renderEnding(step);
+      }
+
+      contentEl.innerHTML = `
+        <div class="dialog-progress">// ${escapeHTML(game.title)}</div>
+        <div class="dialog-text">${escapeHTML(step.text)}</div>
+        ${renderChoices(step.choices, 'gamechoice')}
+        <div class="dialog-cta">
+          <button type="button" class="btn btn-back" data-back="1">[ ← QUIT ]</button>
+        </div>
+      `;
+    }
+
+    function renderEnding(step) {
+      const game = currentGame();
+      setSpeaker(game ? game.title : 'BULBY');
+      setMood('✺ THE END');
+      contentEl.innerHTML = `
+        <div class="dialog-progress">// ENDING — ${escapeHTML(game?.title ?? '')}</div>
+        <div class="dialog-text">${escapeHTML(step.text)}</div>
+        <div class="dialog-ending">${escapeHTML(step.tag ?? '')}</div>
+        <div class="dialog-cta">
+          <button type="button" class="btn primary" data-replay="1">[ PLAY AGAIN ]</button>
+          <button type="button" class="btn btn-back" data-back="1">[ ← BACK ]</button>
+        </div>
+      `;
+    }
+
+    function pickGameChoice(idx) {
+      const game = currentGame();
+      const step = game.steps[state.stepId];
+      const choice = step.choices[idx];
+      if (!choice) return;
+
+      if (choice.score) {
+        state.scores[choice.score] = (state.scores[choice.score] ?? 0) + 1;
+      }
+
+      if (choice.next === '__quiz_end') {
+        // pick the highest-scoring archetype
+        let topKey = Object.keys(game.endings)[0];
+        let topVal = -1;
+        for (const k of Object.keys(state.scores)) {
+          if (state.scores[k] > topVal) { topVal = state.scores[k]; topKey = k; }
+        }
+        const ending = game.endings[topKey];
+        return renderEnding({ ending: true, ...ending });
+      }
+
+      state.stepId = choice.next;
+      renderGameStep();
+    }
+
+    // ======== EVENTS ========
+    contentEl.addEventListener('click', (e) => {
+      const t = e.target.closest('button, a');
+      if (!t || !contentEl.contains(t)) return;
+
+      if (t.dataset.intro != null) {
+        const idx = Number(t.dataset.intro);
+        const choice = intro.choices[idx];
+        if (!choice) return;
+        if (choice.next === '__game') return startGame();
+        return renderFaqNode(choice.next);
+      }
+
+      if (t.dataset.gamechoice != null) {
+        return pickGameChoice(Number(t.dataset.gamechoice));
+      }
+
+      if (t.dataset.back != null) {
+        return renderIntro();
+      }
+
+      if (t.dataset.replay != null) {
+        return startGame();
+      }
+    });
+
+    renderIntro();
+  })();
+</script>

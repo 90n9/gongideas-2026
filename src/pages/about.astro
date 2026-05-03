@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BulbySprite from '../components/BulbySprite.astro';
+import SectionHead from '../components/SectionHead.astro';
+import TalkToBulby from '../components/TalkToBulby.astro';
+
+const journey = [
+  { year: '2006', type: 'job', body: 'PAYSBUY.com · Programmer' },
+  { year: '2008', type: 'job', body: 'GetUp Studio · Senior Programmer' },
+  { year: '2011', type: 'job', body: 'Mintedimages · Web + iPad Developer' },
+  { year: '2014', type: 'edu', body: 'Chulalongkorn · MS Business Software Development' },
+  { year: '2018', type: 'job', body: 'World Reward Solutions · Digital Solutions Manager' },
+  { year: '2021', type: 'job', body: 'RentSpree · Senior Software Engineer' },
+];
+
+const contacts = [
+  { lab: '▶ EMAIL',    val: 'contact@gongideas.com', href: 'mailto:contact@gongideas.com' },
+  { lab: '▶ GITHUB',   val: '@90n9',                 href: 'https://github.com/90n9' },
+  { lab: '▶ FACEBOOK', val: 'facebook.com',          href: 'https://www.facebook.com/profile.php?id=61583997504846' },
+  { lab: '▶ LINKEDIN', val: 'linkedin.com',          href: 'https://www.linkedin.com/in/narathip-harijiratiwong-a96a0683/' },
+];
+---
+<BaseLayout title="About — Character Sheet" description="Gong's character sheet — Bangkok-based indie builder shipping AI experiments." active="about">
+
+  <section style="padding-top: 56px;">
+    <div class="container">
+      <SectionHead title="CHARACTER SHEET" meta="// $ whoami" marker="yellow" />
+
+      <div class="sheet">
+        <aside class="sheet-portrait">
+          <div class="role">★ SOLO PLAYER</div>
+          <BulbySprite width={160} height={200} />
+          <div class="name">GONG (NARATHIP)</div>
+          <div class="title-line">// indie.builder</div>
+
+          <div class="basic-stats">
+            <div class="row"><span class="lab">CLASS</span> <span>Builder</span></div>
+            <div class="row"><span class="lab">RACE</span>  <span>Human · Thai</span></div>
+            <div class="row"><span class="lab">BASE</span>  <span>Bangkok, TH</span></div>
+            <div class="row"><span class="lab">GUILD</span> <span>RentSpree (day)</span></div>
+            <div class="row"><span class="lab">SIDE IDEA</span> <span>GongIdeas</span></div>
+          </div>
+        </aside>
+
+        <div class="sheet-main">
+          <div class="sheet-bio">
+            <h2>▷ BIO</h2>
+            <p>
+              ผมเป็น Software Engineer ที่มี idea ในหัวเยอะ —
+              แต่หลายอย่างทำคนเดียวไม่ไหว จน AI มาถึง.
+            </p>
+            <p>
+              ปี 2025 ผมเริ่ม ship idea ที่ค้างไว้ออกมา.
+              ปี 2026 AI Coding บูม ผมยิ่งทำของใหม่ได้เร็วขึ้น —
+              ใช้ AI Coding tools หลายตัว ผสมกับ Generative AI ตัวอื่น ๆ
+              เป็น co-builder ใน workflow.
+            </p>
+            <p>
+              GongIdeas คือ log ของ experiment เหล่านั้น — <i>learn in public</i>.
+            </p>
+          </div>
+
+          <div class="journey-log">
+            <h2>▷ JOURNEY LOG</h2>
+            <ol class="journey">
+              {journey.map(j => (
+                <li class={`journey-row ${j.type}`}>
+                  <span class="tag">{j.type === 'edu' ? 'EDU' : 'JOB'}</span>
+                  <span class="yr">{j.year}</span>
+                  <span class="body">{j.body}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <SectionHead title="TALK OPTIONS" meta="// pick a channel" marker="orange" />
+
+      <div class="contact-grid">
+        {contacts.map(c => (
+          <a class="contact-card" href={c.href}>
+            <div>
+              <div class="lab">{c.lab}</div>
+              <div class="val">{c.val}</div>
+            </div>
+            <div class="arrow">▶</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>

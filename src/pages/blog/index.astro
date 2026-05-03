@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import DevLogLine from '../../components/DevLogLine.astro';
+import TalkToBulby from '../../components/TalkToBulby.astro';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const allTags = Array.from(new Set(posts.flatMap(p => p.data.tags))).sort();
+---
+<BaseLayout title="Blog — All Posts" description="All of Gong's blog posts — AI coding, automation, game dev." active="blog">
+
+  <section style="padding-top: 56px;">
+    <div class="container">
+      <SectionHead
+        title="BLOG · ARCHIVE"
+        meta={`// ${posts.length} posts · ~/blog/`}
+        marker="mint"
+      />
+
+      <div class="filter-row" id="tag-filter" role="group" aria-label="Filter by tag">
+        <button class="chip" data-tag="all" aria-pressed="true" type="button">ALL</button>
+        {allTags.map(t => (
+          <button class="chip" data-tag={t} aria-pressed="false" type="button">#{t.toUpperCase()}</button>
+        ))}
+      </div>
+
+      <div class="devlog">
+        <div class="term-bar">
+          <div class="term-dots">
+            <span class="r"></span><span class="y"></span><span class="g"></span>
+          </div>
+          <span style="color: var(--mint);">gong@ideas:~/blog$ ls -lt --color *.md</span>
+          <span class="meta-end" style="color: var(--muted);">UTF-8 · 80x24</span>
+        </div>
+
+        <div class="lines" id="post-lines">
+          {posts.map(post => (
+            <div class="line-wrap" data-tags={post.data.tags.join(',')}>
+              <DevLogLine post={post} />
+            </div>
+          ))}
+
+          <div class="term-prompt">
+            gong@ideas:~/blog$ <span class="cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>
+
+<style>
+  .line-wrap { display: contents; }
+  .line-wrap.hidden { display: none; }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('#tag-filter .chip');
+  const wraps = document.querySelectorAll<HTMLElement>('#post-lines .line-wrap');
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const tag = chip.dataset.tag;
+      chips.forEach(c => c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'));
+      wraps.forEach(w => {
+        const tags = (w.dataset.tags ?? '').split(',');
+        const match = tag === 'all' || tags.includes(tag!);
+        w.classList.toggle('hidden', !match);
+      });
+    });
+  });
+</script>

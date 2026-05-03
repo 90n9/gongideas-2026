@@ -1,0 +1,133 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TalkToBulby from '../../components/TalkToBulby.astro';
+
+export async function getStaticPaths() {
+  const ideas = await getCollection('ideas');
+  const sorted = [...ideas].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return sorted.map((idea, i) => ({
+    params: { slug: idea.id },
+    props: {
+      idea,
+      prev: sorted[i + 1] ?? null,
+      next: sorted[i - 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  idea: CollectionEntry<'ideas'>;
+  prev: CollectionEntry<'ideas'> | null;
+  next: CollectionEntry<'ideas'> | null;
+}
+const { idea, prev, next } = Astro.props;
+const { Content } = await render(idea);
+const { data, id } = idea;
+
+const categoryClass: Record<string, string> = {
+  'ai-coding': 'orange',
+  'ai-automation': 'yellow',
+  'ai-video': 'pink',
+  'ai-image': 'pink',
+  'game-dev': '',
+  'misc': '',
+};
+const categoryLabel: Record<string, string> = {
+  'ai-coding': 'AI CODING',
+  'ai-automation': 'AI AUTOMATION',
+  'ai-video': 'AI VIDEO',
+  'ai-image': 'AI IMAGE',
+  'game-dev': 'GAME DEV',
+  'misc': 'MISC',
+};
+const statusLabel: Record<string, string> = {
+  shipped: '▶ SHIPPED',
+  wip: '◐ IN PROGRESS',
+  queued: '◯ QUEUED',
+};
+
+const stars = '★'.repeat(data.difficulty) + '☆'.repeat(5 - data.difficulty);
+const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
+---
+<BaseLayout title={`${data.title} — Idea #${data.ideaId}`} description={data.summary} active="ideas">
+
+  <section class="idea-hero">
+    <div class="container">
+      <div class="idea-breadcrumb">
+        <a href="/ideas/">IDEAS</a> &nbsp;/&nbsp; #{data.ideaId} {id.toUpperCase().replace(/-/g, '_')}
+      </div>
+
+      <div class="idea-title-block">
+        <div class="ihead">
+          <span><span class="iid">#{data.ideaId}</span> &nbsp;{id.toUpperCase().replace(/-/g, '_')}</span>
+          <span style="color: var(--yellow);">DIFFICULTY {stars}</span>
+        </div>
+        <div class="body">
+          <div>
+            <h1>{data.title}</h1>
+            <p class="summary">{data.summary}</p>
+            <div class="meta-tags">
+              <span class={`cat-tag ${categoryClass[data.category]}`}>{categoryLabel[data.category]}</span>
+              <span class={`status-pill ${data.status}`}>{statusLabel[data.status]}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {data.status === 'wip' && typeof data.progress === 'number' && (
+        <div class="idea-progress wide">
+          <span class="lab">QUEST PROGRESS</span>
+          <div class="track"><div class="fill" style={`width: ${data.progress}%;`}></div></div>
+          <span class="num">{data.progress}%</span>
+        </div>
+      )}
+
+      <div class="stat-grid">
+        <div class="stat-tile">
+          <div class="lab">IDEA ID</div>
+          <div class="val">#{data.ideaId}</div>
+        </div>
+        <div class="stat-tile alt">
+          <div class="lab">{data.status === 'shipped' ? 'SHIPPED' : 'STARTED'}</div>
+          <div class="val">{dateStr}</div>
+        </div>
+        <div class="stat-tile">
+          <div class="lab">DIFFICULTY</div>
+          <div class="val">{stars}</div>
+        </div>
+        <div class="stat-tile alt">
+          <div class="lab">TOOLS</div>
+          <div class="val" style="font-size: 14px;">{data.tools.join(' · ') || '—'}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="container">
+      <article class="prose">
+        <Content />
+      </article>
+
+      <nav class="entry-nav" aria-label="Idea navigation">
+        {prev ? (
+          <a class="entry-nav-card prev" href={`/ideas/${prev.id}/`}>
+            <div class="lab">◀ PREV IDEA</div>
+            <div class="title">{prev.data.title}</div>
+          </a>
+        ) : <div></div>}
+        {next ? (
+          <a class="entry-nav-card next" href={`/ideas/${next.id}/`}>
+            <div class="lab">NEXT IDEA ▶</div>
+            <div class="title">{next.data.title}</div>
+          </a>
+        ) : <div></div>}
+      </nav>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>

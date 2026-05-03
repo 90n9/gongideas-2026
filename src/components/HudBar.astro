@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+
+const ideas = await getCollection('ideas');
+const posts = await getCollection('blog');
+
+type Latest = { kind: 'IDEA' | 'POST'; title: string; href: string; date: Date };
+
+const latestIdea: Latest | null = ideas.length
+  ? (() => {
+      const w = [...ideas].sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
+      return { kind: 'IDEA', title: w.data.title, href: `/ideas/${w.id}/`, date: w.data.date };
+    })()
+  : null;
+
+const latestPost: Latest | null = posts.length
+  ? (() => {
+      const p = [...posts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
+      return { kind: 'POST', title: p.data.title, href: `/blog/${p.id}/`, date: p.data.date };
+    })()
+  : null;
+
+const latest: Latest | null =
+  latestIdea && latestPost
+    ? latestIdea.date >= latestPost.date ? latestIdea : latestPost
+    : latestIdea ?? latestPost;
+
+function relativePatch(d: Date): string {
+  const days = Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+  if (days === 0) return 'TODAY';
+  if (days === 1) return '1d';
+  if (days < 14) return `${days}d`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 9) return `${weeks}w`;
+  const months = Math.floor(days / 30);
+  return `${months}mo`;
+}
+
+const lastPatch = latest ? relativePatch(latest.date) : '—';
+---
+<div class="hud-bar">
+  <div class="container">
+    <div class="hud-row">
+      {latest && (
+        <a class="hud-latest" href={latest.href}>
+          <span style="color: var(--mint);">▶</span>
+          <span class="hud-latest-label">LATEST {latest.kind}:</span>
+          <span class="hud-latest-title">{latest.title}</span>
+          <span class="blink" style="color: var(--orange);">_</span>
+        </a>
+      )}
+      <div class="stats">
+        <span>IDEAS: <b>{ideas.length}</b></span>
+        <span>POSTS: <b>{posts.length}</b></span>
+        <span>LAST PATCH: <b>{lastPatch}</b></span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BulbySprite from '../components/BulbySprite.astro';
+import SectionHead from '../components/SectionHead.astro';
+import IdeaCard from '../components/IdeaCard.astro';
+import DevLogLine from '../components/DevLogLine.astro';
+import TalkToBulby from '../components/TalkToBulby.astro';
+
+const allIdeas = (await getCollection('ideas'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const recentIdeas = allIdeas.slice(0, 4);
+
+const allPosts = (await getCollection('blog'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const recentPosts = allPosts.slice(0, 3);
+
+const shippedCount = allIdeas.filter(i => i.data.status === 'shipped').length;
+const wipCount = allIdeas.filter(i => i.data.status === 'wip').length;
+
+const latestWip = allIdeas.find(i => i.data.status === 'wip');
+const latestShipped = allIdeas.find(i => i.data.status === 'shipped');
+const latestPost = allPosts[0];
+---
+<BaseLayout title="GongIdeas — Let's imagine come true." active="home">
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="kicker">◆ PRESS START ◆ &nbsp;GONG'S ADVENTURE</div>
+
+        <h1>
+          Let's imagine<br />
+          <span class="punchline">come true.</span>
+        </h1>
+
+        <p class="lede">
+          สวัสดี, ผม Gong — indie builder ที่กำลังทำ AI experiments
+          และ ship product เล็ก ๆ ของตัวเอง. ทั้ง build, break, และเขียน blog
+          เรื่อง <b>AI Coding</b>, <b>AI Automation</b>,
+          <b>AI Image / Video Gen</b>, <b>Game Dev</b>, และ personal AI projects.
+        </p>
+
+        <div class="hero-cta">
+          <a href="/ideas/" class="btn primary">[ GONG IDEAS ]</a>
+          <a href="/blog/" class="btn">[ READ BLOG ]</a>
+        </div>
+
+        <div class="status-panel">
+          <div class="row">
+            <span class="lab">PLAYER</span>
+            <span><b>GONG</b></span>
+            <span class="lab" style="margin-left: auto;">CLASS</span>
+            <span><b>BUILDER</b></span>
+          </div>
+          <div class="row" style="margin-top: 6px;">
+            <span class="lab">IDEAS</span>
+            <span><b>{shippedCount}</b> SHIPPED</span>
+            <span class="lab" style="margin-left: auto;">WIP</span>
+            <span><b>{wipCount}</b> ACTIVE</span>
+          </div>
+          {latestWip && typeof latestWip.data.progress === 'number' && (
+            <>
+              <div class="xp-bar">
+                <span class="lab">QUEST</span>
+                <div class="xp-track"><div class="xp-fill" style={`width: ${latestWip.data.progress}%;`}></div></div>
+                <span class="xp-num">{latestWip.data.progress}%</span>
+              </div>
+              <div class="quest-caption">// {latestWip.data.title}</div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div class="hero-aside">
+        <div class="bulby-stage">
+          <div class="bulby-label">PARTY MEMBER · 01</div>
+          <BulbySprite />
+          <div class="bulby-name">BULBY</div>
+          <div class="bulby-line">// idea sprite · LV.99</div>
+        </div>
+
+        <div class="mini-cluster">
+          <div class="head">◆ CURRENT QUEST</div>
+          <div class="body">
+            {latestWip && <>→ Building: <a class="quest-link" href={`/ideas/${latestWip.id}/`}>{latestWip.data.title}</a><br /></>}
+            {latestShipped && <>→ Just shipped: <a class="quest-link" href={`/ideas/${latestShipped.id}/`}>{latestShipped.data.title}</a><br /></>}
+            {latestPost && <>→ Latest log: <a class="quest-link" href={`/blog/${latestPost.id}/`}><i>{latestPost.data.title}</i></a></>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ideas">
+    <div class="container">
+      <SectionHead
+        title="IDEAS · ACTIVE EXPERIMENTS"
+        meta={`// ${allIdeas.length} ideas · last updated ${recentIdeas[0]?.data.date.toISOString().slice(0,10) ?? ''}`}
+      />
+
+      <div class="idea-grid">
+        {recentIdeas.map(idea => <IdeaCard idea={idea} />)}
+      </div>
+
+      <div class="see-all">
+        <a href="/ideas/">▶ VIEW ALL IDEAS →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="blog">
+    <div class="container">
+      <SectionHead title="RECENT POSTS" meta="// 3 most recent · ~/blog/" marker="mint" />
+
+      <div class="devlog">
+        <div class="term-bar">
+          <div class="term-dots">
+            <span class="r"></span><span class="y"></span><span class="g"></span>
+          </div>
+          <span style="color: var(--mint);">gong@ideas:~/blog$ ls -lt --color | head -3</span>
+          <span class="meta-end" style="color: var(--muted);">UTF-8 · 80x24</span>
+        </div>
+
+        <div class="lines">
+          {recentPosts.map(post => <DevLogLine post={post} />)}
+
+          <div class="term-prompt">
+            gong@ideas:~/blog$ <span class="cursor"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="see-all">
+        <a href="/blog/">▶ VIEW ALL ENTRIES →</a>
+      </div>
+    </div>
+  </section>
+
+  <TalkToBulby
+    latestWip={latestWip ? { title: latestWip.data.title, href: `/ideas/${latestWip.id}/` } : null}
+    latestPost={latestPost ? { title: latestPost.data.title, href: `/blog/${latestPost.id}/` } : null}
+  />
+
+</BaseLayout>

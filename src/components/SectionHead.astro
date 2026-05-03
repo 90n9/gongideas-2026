@@ -1,0 +1,14 @@
+---
+interface Props {
+  title: string;
+  meta?: string;
+  marker?: 'orange' | 'mint' | 'pink' | 'yellow';
+}
+const { title, meta, marker = 'orange' } = Astro.props;
+const markerClass = marker === 'orange' ? 'marker' : `marker ${marker}`;
+---
+<div class="section-head">
+  <div class={markerClass}></div>
+  <h2>{title}</h2>
+  {meta && <div class="meta">{meta}</div>}
+</div>

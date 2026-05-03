@@ -1,0 +1,29 @@
+---
+interface Props {
+  active?: 'home' | 'ideas' | 'blog' | 'about';
+}
+const { active = 'home' } = Astro.props;
+
+const links = [
+  { id: 'home',  label: 'HOME',  href: '/' },
+  { id: 'ideas', label: 'IDEAS', href: '/ideas/' },
+  { id: 'blog',  label: 'BLOG',  href: '/blog/' },
+  { id: 'about', label: 'ABOUT', href: '/about/' },
+] as const;
+---
+<div class="nav-wrap">
+  <div class="container nav">
+    <a class="brand" href="/">
+      <img src="/assets/bulby.svg" alt="Bulby — GongIdeas mascot" />
+      <div>
+        <div class="brand-mark">GONGIDEAS</div>
+        <div class="brand-tag">// indie.builder</div>
+      </div>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      {links.map(link => (
+        <a href={link.href} class={active === link.id ? 'active' : ''}>{link.label}</a>
+      ))}
+    </nav>
+  </div>
+</div>

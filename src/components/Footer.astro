@@ -1,0 +1,27 @@
+---
+const year = new Date().getFullYear();
+const links = [
+  { label: 'GITHUB',   href: 'https://github.com/90n9' },
+  { label: 'FACEBOOK', href: 'https://www.facebook.com/profile.php?id=61583997504846' },
+  { label: 'LINKEDIN', href: 'https://www.linkedin.com/in/narathip-harijiratiwong-a96a0683/' },
+  { label: 'RSS',      href: '/rss.xml' },
+];
+---
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <div class="footer-left">
+        <img src="/assets/bulby.svg" alt="Bulby — GongIdeas mascot" />
+        <div class="copy">© {year} GongIdeas · Let's imagine come true.</div>
+      </div>
+      <div class="footer-links">
+        {links.map(l => <a href={l.href}>{l.label}</a>)}
+      </div>
+    </div>
+
+    <div class="save-strip">
+      <span><span class="l">▶ MISSION.</span> &nbsp;Imagine. Build. Ship. Repeat.</span>
+      <span>v0.1.0</span>
+    </div>
+  </div>
+</footer>

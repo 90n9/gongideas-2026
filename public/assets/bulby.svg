@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" shape-rendering="crispEdges" aria-label="Bulby">
+  <!-- bulb glass (yellow) -->
+  <rect x="6" y="1" width="4" height="1" fill="#F2C94C"/>
+  <rect x="5" y="2" width="6" height="1" fill="#F2C94C"/>
+  <rect x="4" y="3" width="8" height="1" fill="#F2C94C"/>
+  <rect x="3" y="4" width="10" height="1" fill="#F2C94C"/>
+  <rect x="3" y="5" width="10" height="1" fill="#F2C94C"/>
+  <rect x="3" y="6" width="10" height="1" fill="#F2C94C"/>
+  <rect x="3" y="7" width="10" height="1" fill="#F2C94C"/>
+  <rect x="4" y="8" width="8" height="1" fill="#F2C94C"/>
+  <rect x="4" y="9" width="8" height="1" fill="#F2C94C"/>
+  <!-- highlight shimmer -->
+  <rect x="5" y="3" width="2" height="1" fill="#FFE48C"/>
+  <rect x="4" y="4" width="3" height="1" fill="#FFE48C"/>
+  <rect x="4" y="5" width="2" height="1" fill="#FFE48C"/>
+  <!-- bulb outline -->
+  <rect x="6" y="0" width="4" height="1" fill="#1A1A2E"/>
+  <rect x="5" y="1" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="10" y="1" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="4" y="2" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="11" y="2" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="3" y="3" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="12" y="3" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="2" y="4" width="1" height="4" fill="#1A1A2E"/>
+  <rect x="13" y="4" width="1" height="4" fill="#1A1A2E"/>
+  <rect x="3" y="8" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="12" y="8" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="3" y="9" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="12" y="9" width="1" height="1" fill="#1A1A2E"/>
+  <!-- smiley (eyes blink: double-blink every 4.2s) -->
+  <rect x="5" y="6" width="1" height="1" fill="#1A1A2E">
+    <animate attributeName="opacity"
+             values="1;1;0;1;0;1"
+             keyTimes="0;0.90;0.92;0.94;0.96;0.98"
+             dur="4.2s"
+             calcMode="discrete"
+             repeatCount="indefinite"/>
+  </rect>
+  <rect x="10" y="6" width="1" height="1" fill="#1A1A2E">
+    <animate attributeName="opacity"
+             values="1;1;0;1;0;1"
+             keyTimes="0;0.90;0.92;0.94;0.96;0.98"
+             dur="4.2s"
+             calcMode="discrete"
+             repeatCount="indefinite"/>
+  </rect>
+  <rect x="6" y="7" width="4" height="1" fill="#1A1A2E"/>
+  <rect x="6" y="8" width="4" height="1" fill="#FF4D8B"/>
+  <!-- screw base -->
+  <rect x="4" y="10" width="8" height="1" fill="#1A1A2E"/>
+  <rect x="5" y="11" width="6" height="1" fill="#8a8aa0"/>
+  <rect x="4" y="12" width="8" height="1" fill="#1A1A2E"/>
+  <rect x="5" y="13" width="6" height="1" fill="#8a8aa0"/>
+  <rect x="4" y="14" width="8" height="1" fill="#1A1A2E"/>
+  <rect x="6" y="15" width="4" height="1" fill="#5a5a72"/>
+  <rect x="6" y="16" width="4" height="1" fill="#1A1A2E"/>
+  <!-- string tail -->
+  <rect x="7" y="17" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="8" y="18" width="1" height="1" fill="#1A1A2E"/>
+  <rect x="9" y="19" width="1" height="1" fill="#1A1A2E"/>
+</svg>

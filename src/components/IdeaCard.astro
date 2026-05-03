@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  idea: CollectionEntry<'ideas'>;
+}
+const { idea } = Astro.props;
+const { data, id } = idea;
+
+const categoryClass: Record<string, string> = {
+  'ai-coding': 'orange',
+  'ai-automation': 'yellow',
+  'ai-video': 'pink',
+  'ai-image': 'pink',
+  'game-dev': '',
+  'misc': '',
+};
+const categoryLabel: Record<string, string> = {
+  'ai-coding': 'AI CODING',
+  'ai-automation': 'AI AUTOMATION',
+  'ai-video': 'AI VIDEO',
+  'ai-image': 'AI IMAGE',
+  'game-dev': 'GAME DEV',
+  'misc': 'MISC',
+};
+const statusLabel: Record<string, string> = {
+  shipped: '▶ SHIPPED',
+  wip: '◐ IN PROGRESS',
+  queued: '◯ QUEUED',
+};
+
+const stars = '★'.repeat(data.difficulty) + '☆'.repeat(5 - data.difficulty);
+
+const dateStr = data.status === 'wip'
+  ? `// updated ${data.date.toISOString().slice(0, 10).replace(/-/g, '.')}`
+  : `// shipped ${data.date.toISOString().slice(0, 10).replace(/-/g, '.')}`;
+---
+<a class="idea" href={`/ideas/${id}/`}>
+  <div class="ihead">
+    <span><span class="iid">#{data.ideaId}</span> &nbsp;{id.toUpperCase().replace(/-/g, '_')}</span>
+    <span style="color: var(--yellow);">DIFFICULTY {stars}</span>
+  </div>
+  <div class="cover">
+    <div class="cover-tag">{data.cover ?? 'COVER · TBD'}</div>
+  </div>
+  <div class="ibody">
+    <div class="tag-row">
+      <span class={`cat-tag ${categoryClass[data.category]}`}>{categoryLabel[data.category]}</span>
+      <span class={`status-pill ${data.status}`}>{statusLabel[data.status]}</span>
+    </div>
+    <h3>{data.title}</h3>
+    <p class="desc">{data.summary}</p>
+    {data.status === 'wip' && typeof data.progress === 'number' && (
+      <div class="idea-progress compact">
+        <div class="track"><div class="fill" style={`width: ${data.progress}%;`}></div></div>
+        <span class="num">{data.progress}%</span>
+      </div>
+    )}
+    <div class="ifoot">
+      <span>{dateStr}</span>
+      {data.reads !== undefined ? <span>★ {data.reads} reads</span> : <span>{statusLabel[data.status].toLowerCase()}</span>}
+    </div>
+  </div>
+</a>

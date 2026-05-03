@@ -141,3 +141,16 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Astro
+.astro/
+
+# Playwright MCP run artifacts (browsing history, snapshots, console logs)
+.playwright-mcp/
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# Stale single-file design exploration (kept locally for reference)
+gongideas-redesign/_screenshots/

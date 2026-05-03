@@ -1,0 +1,95 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TalkToBulby from '../../components/TalkToBulby.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const sorted = [...posts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return sorted.map((post, i) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      prev: sorted[i + 1] ?? null,
+      next: sorted[i - 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  prev: CollectionEntry<'blog'> | null;
+  next: CollectionEntry<'blog'> | null;
+}
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
+const { data, id } = post;
+
+const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
+
+let related: CollectionEntry<'ideas'> | null = null;
+if (data.relatedIdea) {
+  related = (await getEntry('ideas', data.relatedIdea)) ?? null;
+}
+---
+<BaseLayout title={data.title} description={data.summary} active="blog">
+
+  <section class="idea-hero">
+    <div class="container">
+      <div class="idea-breadcrumb">
+        <a href="/blog/">BLOG</a> &nbsp;/&nbsp; {id.toUpperCase().replace(/-/g, '_')}.MD
+      </div>
+
+      <article class="post-shell">
+        <div class="term-bar">
+          <div class="term-dots">
+            <span class="r"></span><span class="y"></span><span class="g"></span>
+          </div>
+          <span style="color: var(--mint);">gong@ideas:~/blog$ cat {id}.md</span>
+          <span class="meta-end" style="color: var(--muted);">UTF-8 · 80x24</span>
+        </div>
+
+        <header class="head-block">
+          <div class="post-date">▶ {dateStr}</div>
+          <h1>{data.title}</h1>
+          <p class="post-summary">{data.summary}</p>
+          <div class="post-tags">
+            {data.tags.map(t => <span class="tag">#{t}</span>)}
+          </div>
+        </header>
+
+        <div class="body-block">
+          <div class="prose">
+            <Content />
+          </div>
+        </div>
+      </article>
+
+      {related && (
+        <a class="entry-nav-card" href={`/ideas/${related.id}/`} style="display: block; margin-bottom: 32px;">
+          <div class="lab">▶ RELATED IDEA · #{related.data.ideaId}</div>
+          <div class="title">{related.data.title}</div>
+        </a>
+      )}
+
+      <nav class="entry-nav" aria-label="Post navigation">
+        {prev ? (
+          <a class="entry-nav-card prev" href={`/blog/${prev.id}/`}>
+            <div class="lab">◀ PREV ENTRY</div>
+            <div class="title">{prev.data.title}</div>
+          </a>
+        ) : <div></div>}
+        {next ? (
+          <a class="entry-nav-card next" href={`/blog/${next.id}/`}>
+            <div class="lab">NEXT ENTRY ▶</div>
+            <div class="title">{next.data.title}</div>
+          </a>
+        ) : <div></div>}
+      </nav>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>
