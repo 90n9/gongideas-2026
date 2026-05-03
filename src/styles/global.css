@@ -626,7 +626,18 @@ section { padding: 56px 0 40px; }
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
+.idea .cover.has-image { background: var(--ink); }
+.idea .cover.has-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  image-rendering: auto;
+  transition: transform 0.3s ease;
+}
+.idea:hover .cover.has-image img { transform: scale(1.04); }
 .cover-tag {
   background: var(--parchment);
   border: 2px solid var(--ink);

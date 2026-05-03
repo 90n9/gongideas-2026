@@ -34,14 +34,18 @@ const stars = '★'.repeat(data.difficulty) + '☆'.repeat(5 - data.difficulty);
 const dateStr = data.status === 'wip'
   ? `// updated ${data.date.toISOString().slice(0, 10).replace(/-/g, '.')}`
   : `// shipped ${data.date.toISOString().slice(0, 10).replace(/-/g, '.')}`;
+
+const coverIsImage = !!data.cover && data.cover.startsWith('/');
 ---
 <a class="idea" href={`/ideas/${id}/`}>
   <div class="ihead">
     <span><span class="iid">#{data.ideaId}</span> &nbsp;{id.toUpperCase().replace(/-/g, '_')}</span>
     <span style="color: var(--yellow);">DIFFICULTY {stars}</span>
   </div>
-  <div class="cover">
-    <div class="cover-tag">{data.cover ?? 'COVER · TBD'}</div>
+  <div class={`cover${coverIsImage ? ' has-image' : ''}`}>
+    {coverIsImage
+      ? <img src={data.cover} alt={data.title} loading="lazy" decoding="async" />
+      : <div class="cover-tag">{data.cover ?? 'COVER · TBD'}</div>}
   </div>
   <div class="ibody">
     <div class="tag-row">
