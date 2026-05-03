@@ -4,7 +4,7 @@
 
 Personal site of **Gong (Narathip)** — a Bangkok-based indie builder shipping AI experiments. GongIdeas is the public log of those experiments: AI Coding, AI Automation, AI Image/Video Gen, Game Dev, and personal AI projects.
 
-Live: https://gongideas.example
+Live: https://gongideas.com
 
 ## Stack
 
