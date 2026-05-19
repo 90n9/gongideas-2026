@@ -4,11 +4,12 @@ ideaId: "003"
 summary: "พอร์ตเกมจิ๊กซอว์ภูมิศาสตร์ไทยจาก asset ปี 2014 ขึ้น web ด้วย Phaser 3 + Vite — ใช้ AI coding ช่วย convert"
 category: "ai-coding"
 status: "shipped"
-difficulty: 3
+difficulty: 1
 date: 2026-05-01
 tools: ["Phaser 3", "Vite", "TypeScript", "Claude Code"]
+liveUrl: "https://thailand-puzzle.gongideas.com/"
 repoUrl: "https://github.com/90n9/thailand-puzzle-web"
-cover: "/assets/covers/thailand-puzzle-web.jpg"
+cover: "/assets/covers/thailand-puzzle-web.png"
 ---
 
 ## ที่มา

@@ -4,11 +4,11 @@ ideaId: "001"
 summary: "ช่อง YouTube เล่า Aesop's Fables สไตล์ Pixar ให้ลูกชายอายุ 3 ขวบดูก่อนนอน — pipeline AI ล้วน ๆ ตั้งแต่ storyboard ถึง final cut"
 category: "ai-video"
 status: "shipped"
-difficulty: 4
+difficulty: 5
 date: 2025-12-15
 tools: ["ChatGPT", "MidJourney", "Runway", "Hailuo AI", "ElevenLabs", "Suno", "CapCut"]
 liveUrl: "https://www.youtube.com/@TheOwlsNook"
-cover: "/assets/covers/the-owls-nook.jpg"
+cover: "/assets/covers/the-owls-nook.png"
 ---
 
 ## ทำไมถึงเริ่ม

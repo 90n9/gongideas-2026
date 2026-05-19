@@ -50,6 +50,9 @@ const statusLabel: Record<string, string> = {
 
 const stars = '★'.repeat(data.difficulty) + '☆'.repeat(5 - data.difficulty);
 const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
+
+const coverIsImage = !!data.cover && data.cover.startsWith('/');
+const liveLabel = data.liveUrl?.includes('youtube.com') ? '▶ WATCH' : '▶ VISIT SITE';
 ---
 <BaseLayout title={`${data.title} — Idea #${data.ideaId}`} description={data.summary} active="ideas">
 
@@ -58,6 +61,12 @@ const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
       <div class="idea-breadcrumb">
         <a href="/ideas/">IDEAS</a> &nbsp;/&nbsp; #{data.ideaId} {id.toUpperCase().replace(/-/g, '_')}
       </div>
+
+      {coverIsImage && (
+        <figure class="idea-cover pix-frame">
+          <img src={data.cover} alt={data.title} loading="eager" decoding="async" />
+        </figure>
+      )}
 
       <div class="idea-title-block">
         <div class="ihead">
@@ -72,6 +81,13 @@ const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
               <span class={`cat-tag ${categoryClass[data.category]}`}>{categoryLabel[data.category]}</span>
               <span class={`status-pill ${data.status}`}>{statusLabel[data.status]}</span>
             </div>
+            {data.liveUrl && (
+              <div class="idea-actions">
+                <a class="btn primary" href={data.liveUrl} target="_blank" rel="noopener noreferrer">
+                  {liveLabel}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -4,11 +4,12 @@ ideaId: "002"
 summary: "Freelance project ล่าสุด — voucher booking sub-site ของ lifestyleandtravel.com, ใช้ AI ตั้งแต่ design, hero image, ถึง code ทั้ง stack"
 category: "ai-coding"
 status: "shipped"
-difficulty: 4
+difficulty: 2
 date: 2026-04-29
 tools: ["CodeIgniter 4", "PHP 8", "MySQL", "Tailwind CSS", "MidJourney", "Claude Code", "Docker"]
+liveUrl: "https://market.lifestyleandtravel.com"
 repoUrl: "https://github.com/90n9/ltmarket"
-cover: "/assets/covers/ltmarket.jpg"
+cover: "/assets/covers/ltmarket.png"
 ---
 
 ## Brief

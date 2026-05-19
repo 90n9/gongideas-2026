@@ -1234,6 +1234,31 @@ footer {
   margin-top: 18px;
   flex-wrap: wrap;
 }
+.idea-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+/* Cover banner */
+.idea-cover {
+  margin: 0 0 28px;
+  padding: 0;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-height: 420px;
+}
+.idea-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+}
 
 /* Stat block grid */
 .stat-grid {
@@ -1842,9 +1867,13 @@ footer {
 
   /* Idea detail */
   .idea-hero { padding: 28px 0 16px; }
+  .idea-cover { max-height: 240px; margin-bottom: 20px; }
+  .idea-cover img { max-height: 240px; }
   .idea-title-block .body { padding: 22px 20px 22px; }
   .idea-title-block h1 { font-size: 16px; line-height: 1.45; }
   .idea-title-block .summary { font-size: 15px; }
+  .idea-actions { gap: 10px; }
+  .idea-actions .btn { flex: 1 1 auto; justify-content: center; padding: 13px 16px; }
   .stat-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .stat-tile { padding: 12px 12px 10px; }
   .stat-tile .val { font-size: 18px; }

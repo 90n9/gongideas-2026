@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://gongideas.example',
+  site: 'https://gongideas.com',
   trailingSlash: 'always',
   build: {
     format: 'directory',
