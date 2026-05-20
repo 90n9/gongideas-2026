@@ -1394,6 +1394,26 @@ footer {
   border-top: 2px dashed rgba(26,26,46,0.35);
   margin: 36px 0;
 }
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 22px 0;
+  font-size: 15px;
+}
+.prose th {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-align: left;
+  padding: 10px 14px;
+  border: 2px solid var(--mint);
+  color: var(--mint);
+}
+.prose td {
+  padding: 10px 14px;
+  border: 2px solid var(--mint);
+  vertical-align: top;
+}
 .prose img {
   max-width: 100%;
   border: 2px solid var(--ink);

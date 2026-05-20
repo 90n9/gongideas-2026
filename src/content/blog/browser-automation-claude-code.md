@@ -1,110 +1,78 @@
 ---
-title: "Web Automation บน Claude Code"
-summary: "Claude in Chrome, Playwright MCP, และ Playwright CLI — เลือกใช้ตัวไหนตอนไหน, และทำไมต้องโยนเข้า sub-agent ก่อนเสมอ"
+title: "ให้ AI ทำงานบน browser ให้"
+summary: "สำหรับงานที่ต้องเข้า browser ไปทำเอง หรือต้อง copy ข้อมูลมาให้ AI อีกที — ลองเปลี่ยนให้ AI ทำ web automation เองดีกว่า"
 date: 2026-05-03
 tags: ["ai-coding", "automation", "claude"]
 ---
 
-ปัญหาที่อยากแก้: งานเว็บซ้ำ ๆ ทุกวันมันกินเวลาผมไปเยอะเกิน.
+มีงานบางอย่างที่เราทำซ้ำทุกวัน แต่ยังทำเองอยู่เพราะมันไม่มี API หรือ MCP ให้ใช้โดยตรง บางทีก็เพราะ plan ที่เราสมัครไว้มันไม่รวม API บางทีก็เพราะต้องขอสิทธิ์จากคนอื่นก่อนถึงจะเขียน script ได้ เลยไม่คุ้มที่จะไปทำ
 
-เปิด Gmail มา triage 50+ เมล. เปิด Google Analytics ไปเซตอัพ property ใหม่ทุกครั้งที่ขึ้น project. เปิด Midjourney แปะ prompt รอภาพ, แล้ว switch tab ไป ElevenLabs gen เสียง. งานพวกนี้ไม่ต้องคิด แต่กินเวลาวันละชั่วโมง+ ง่าย ๆ.
+อย่างพวก email ก็เป็นตัวอย่างที่ชัด บางคนอยากให้ AI ช่วยกรอง spam หรือ newsletter ออก บางทีก็อยากให้ AI รู้ context ของอีเมลบางฉบับเพื่อจะได้ตอบหรือหาข้อมูลให้ได้ ซึ่งหลายคนก็ใช้วิธี copy เนื้อหาจาก email มาวางใน chat ทีละอัน ซึ่งมันก็ทำได้ แต่เหนื่อย หรืองานพวกเซตอัพ Google Analytics, สร้างไฟล์รูป วิดีโอ เสียง ใน app ที่เราจ่ายตังสมัครไว้ แต่ plan ที่ใช้ไม่มี API ให้ — ก็ต้องเปิดหน้าเว็บเซตเอง แล้วก็วน copy ข้อมูลไปกลับระหว่าง browser กับ terminal ที่คุยกับ AI อยู่
 
-คำถามคือ — ถ้าผมให้ Claude Code นั่งทำแทน, มันทำได้แค่ไหน?
+งานพวกนี้จริง ๆ แล้วให้ AI ทำให้ได้ทั้งหมด โดยใช้ browser automation ที่ผมใช้อยู่มีอยู่ 3 แบบ
 
-คำตอบ: ทำได้เกือบทั้งหมด ถ้าเลือกเครื่องมือถูก.
+## Claude in Chrome
 
-ผมใช้ web automation บน Claude Code มาประมาณ 3 เดือนแล้ว ทั้งใน routine ส่วนตัวและงาน client. มี 3 วิธีที่ผมหมุนใช้, แต่ละตัวมีจังหวะของมัน. โพสต์นี้คือ cheat sheet ของตัวเอง — เผื่อใครอยากเริ่มจะได้ไม่ต้องลองผิดถูกเหมือนผม.
+ตัวนี้ผมเปิดก่อนเสมอถ้าไม่มีเหตุผลพิเศษ เป็น Chrome extension ของ Anthropic เอง — ติดตั้ง login ครั้งเดียวแล้วใช้เลย
 
-## วิธีที่ 1: Claude in Chrome (MCP)
+สิ่งที่มัน win คือมัน control Chrome ตัวที่ผม login อยู่จริง ๆ session ของ Gmail, Analytics, Midjourney ที่ค้างไว้ → ใช้ได้เลย ไม่ต้อง re-auth, ไม่ต้องจัดการ cookie อะไรทั้งนั้น
 
-ตัวที่ผมใช้บ่อยที่สุด. เป็น **Chrome extension** ที่ Anthropic ทำเอง — ติดตั้ง, login เข้า extension ครั้งเดียว, เสร็จ.
+> ถ้าโจทย์คือ "ไปทำอะไรซักอย่างบนเว็บที่ผมล็อกอินอยู่แล้ว" — ตัวนี้คือ default.
 
-จุดที่มัน win คือ: **มัน control Chrome ตัวที่ผม login อยู่**. แปลว่า session ของ Gmail, Google Analytics, Midjourney ที่ผม login ไว้แล้ว → ใช้ได้เลย ไม่ต้อง re-auth, ไม่ต้องจัดการ cookie.
+ใช้ได้ทั้งจาก Claude Code (CLI) และ Claude.ai บนเว็บ extension เดียวกันเลย
 
-> ถ้าโจทย์คือ "เปิดเว็บที่ผมล็อกอินอยู่แล้ว ไปทำอะไรซักอย่าง" — Claude in Chrome คือคำตอบ default ของผม.
+## Playwright MCP
 
-เซตอัพแบบ end-to-end ใช้เวลา ~5 นาที. และตัวนี้มันทำงานได้ทั้งกับ **Claude Code (CLI)** และตอนเปิด session คู่กับ **Claude.ai บนเว็บ** — อันเดียวกัน, ใช้ extension เดียวกัน.
+ใช้ตอนต้องการ browser profile แยกต่อ project หรือต้องคุม session หลายตัวพร้อมกัน
 
-งานที่ผมโยนใส่บ่อย:
-- Triage Gmail ตอนเช้า — label, archive, ร่าง reply
-- เปิด Midjourney → แปะ prompt → รอ → save image กลับ local
-- ElevenLabs gen voice-over จาก script ที่ผมเขียน
-- เซตอัพ GA4 property ใหม่ตอนขึ้น project
-
-## วิธีที่ 2: Playwright MCP
-
-ใช้ตอน Claude in Chrome ไม่เหมาะ — เช่น ต้องรันใน background, ต้องคุม browser หลายตัว, หรือต้องการ profile แยกต่อ project.
-
-เซตอัพใน `.mcp.json`:
+เซตอัพใน `.mcp.json` แบบนี้
 
 ```json
 {
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest",
-        "--user-data-dir=/Users/me/projects/foo/.playwright-mcp"
-      ]
+      "args": ["@playwright/mcp@latest", "--user-data-dir=/Users/me/projects/foo/.playwright-mcp"]
     }
   }
 }
 ```
 
-`--user-data-dir` คือ **กุญแจ**. มันคือ Chrome profile directory ของ Playwright ตัวนั้น. ถ้าผมล็อกอิน Google Account ทิ้งไว้รอบเดียวใน path นี้, รอบหน้าเปิดมา → ยังล็อกอินอยู่. และผมแยก dir ต่อ project ได้:
+`--user-data-dir` คือตัวสำคัญ — login ทิ้งไว้ใน path นี้รอบเดียว รอบหน้าเปิดมา session ยังอยู่ครบ จะแยก dir ต่อ project ก็ได้ ไม่ต้อง logout/login ซ้ำทุกครั้ง
 
-- `~/projects/foo/.playwright-mcp` → account A (project A)
-- `~/projects/bar/.playwright-mcp` → account B (project B)
+## Playwright CLI + Skill
 
-อยากสลับ? แค่แก้ path ใน `.mcp.json`. ไม่ต้อง logout/login ทุกครั้ง.
+ใช้ตอน task ใหญ่ที่ MCP กิน token เยอะเกินไป วิธีคือตั้ง skill ให้ Claude รู้ว่าเวลาจะทำ web automation ให้เขียน `.ts` script แล้ว `npx playwright test` รันเอง ไม่ผ่าน MCP เลย
 
-> ของแถม: ถ้าใช้ **Codex CLI** ของ OpenAI, config เหมือนกันเป๊ะ — แค่เขียนเป็น TOML แทน JSON ที่ `~/.codex/config.toml`. ผมเอา snippet เดียวกันใช้ทั้งสองที่.
+มันกิน token น้อยกว่าเพราะไม่ส่ง DOM snapshot กลับมาทุก step, replay ได้ และ debug ง่ายกว่าเยอะเพราะเห็น script เต็ม ๆ แลกมาด้วย setup ที่นานกว่า และไม่เหมาะงานที่ยังไม่รู้ว่า DOM หน้าตาเป็นยังไง ผมใช้ตัวนี้ตอนรู้ flow ชัดแล้วและต้องรันซ้ำหลายรอบ
 
-## วิธีที่ 3: Playwright CLI + Skill
+## โยนเข้า sub-agent เถอะ
 
-อันนี้ผมเพิ่งย้ายมาใช้ตอน task ใหญ่ ๆ ที่ MCP กิน token เยอะเกิน.
+นี่คือบทเรียนแพงที่สุดของผม
 
-วิธีคือ: install `playwright` CLI ตรง ๆ, แล้วเซต **skill** (ไฟล์ `SKILL.md` ใน skill folder) ที่บอก Claude ว่า — เวลาจะทำ web automation, ให้เขียน Playwright script เป็น `.ts` แล้ว `npx playwright test` รันเอา. ไม่ผ่าน MCP เลย.
+Web automation กิน token หนักมาก ทุก step มันส่ง DOM กับ screenshot กลับมา ถ้าให้ main context ทำเอง context window เต็มใน 5–10 step แล้ว Claude เริ่มลืม goal เดิม
 
-ข้อดีที่ skill เคลม (และผมก็เห็นด้วย หลังลอง):
-- **กิน token น้อยกว่า MCP** — เพราะ MCP ส่ง DOM snapshot กลับมาทุก step. CLI mode มันไม่ส่ง, แค่ดู script รันผ่าน/ไม่ผ่าน
-- **Replay ได้** — script เซฟเป็นไฟล์, รันซ้ำได้โดยไม่ต้องเรียก Claude เลย
-- **Debug ง่ายกว่า** — เห็น script เต็ม ๆ, รู้เลยว่ามันคลิก selector ไหน
-
-trade-off: setup นานกว่า, และไม่เหมาะกับงานสำรวจ (ที่ไม่รู้ว่าหน้าตา DOM เป็นยังไง). ใช้ตอนรู้แน่ ๆ ว่าจะทำอะไร, ทำซ้ำหลายรอบ.
-
-## เรื่องสำคัญที่อยากเตือน — โยนเข้า sub-agent เถอะ
-
-นี่คือบทเรียนแพง ๆ ของผม.
-
-Web automation **กิน token หนักมาก** — ทุก step มันโยน DOM/screenshot/accessibility tree กลับมา. ถ้าให้ main context ทำเอง, context window เต็มภายใน 5–10 step. แล้ว Claude เริ่มลืม goal เดิม.
-
-วิธีแก้: **โยนเข้า sub-agent**.
+วิธีแก้คือ spawn sub-agent ออกไปทำงานแทน
 
 ```
 Task: triage gmail
-→ spawn sub-agent (subagent_type=general-purpose)
+→ spawn sub-agent
    → sub-agent คุย MCP, browse, ทำงาน
    → return short summary กลับมา
-→ main context รับแค่ "done, archived 23, replied 4"
+→ main context รับแค่ "archived 23, replied 4"
 ```
 
-Main context ไม่เห็น DOM สักก้อน. clean.
+Main context ไม่เห็น DOM สักก้อน — clean มาก
 
-อีกข้อ — **ถ้ามี API หรือ MCP ตรง ๆ, ใช้ตัวนั้นก่อน**. อย่าไปไล่คลิก browser. ตัวอย่าง:
-- Gmail → ใช้ Gmail MCP / API
-- Slack → ใช้ Slack MCP
-- Datadog → ใช้ Datadog MCP
+และถ้ามี API หรือ MCP ตรง ๆ อยู่แล้วอย่าง Gmail, Slack, Datadog — ใช้ตัวนั้นก่อนเลย Browser automation ไว้ใช้ตอนไม่มี API ให้เรียก ไม่ใช่ default tool
 
-Browser automation = **last resort** เวลาไม่มี API ให้เรียก. ไม่ใช่ default tool.
-
-## สรุปแบบที่ผมใช้จริง
+## สรุป
 
 | สถานการณ์ | ใช้อะไร |
 |---|---|
-| งาน routine บนเว็บที่ผม login อยู่ | Claude in Chrome |
+| งาน routine บนเว็บที่ login อยู่ | Claude in Chrome |
 | ต้อง persist profile ต่อ project | Playwright MCP + `--user-data-dir` |
-| งานทำซ้ำหลายรอบ, รู้ flow ชัด | Playwright CLI + skill |
-| มี MCP/API อย่างเป็นทางการ | **ใช้ตัวนั้น, ไม่ใช่ browser** |
+| งานทำซ้ำหลายรอบ รู้ flow ชัด | Playwright CLI + skill |
+| มี MCP/API อย่างเป็นทางการ | ใช้ตัวนั้น — ไม่ใช่ browser |
 
-3 เดือนที่ผ่านมา routine ตอนเช้าผมหายไปประมาณ 45 นาที/วัน. ส่วนนึงเอาคืนมาเขียน devlog แบบนี้แหละ.
+หวังว่าจะเป็นประโยชน์ต่อทุกคนนะครับ
