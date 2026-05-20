@@ -80,6 +80,9 @@ const liveLabel = data.liveUrl?.includes('youtube.com') ? '▶ WATCH' : '▶ VIS
             <div class="meta-tags">
               <span class={`cat-tag ${categoryClass[data.category]}`}>{categoryLabel[data.category]}</span>
               <span class={`status-pill ${data.status}`}>{statusLabel[data.status]}</span>
+              {data.tags && data.tags.map((tag: string) => (
+                <span class="idea-label">{tag}</span>
+              ))}
             </div>
             {data.liveUrl && (
               <div class="idea-actions">

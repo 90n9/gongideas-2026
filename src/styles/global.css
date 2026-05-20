@@ -685,6 +685,16 @@ section { padding: 56px 0 40px; }
 .status-pill.shipped { background: var(--ink); color: var(--mint); }
 .status-pill.wip { background: var(--yellow); color: var(--ink); }
 .status-pill.queued { background: var(--parchment-deep); color: var(--ink); }
+.idea-label {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  padding: 5px 8px;
+  border: 2px solid var(--ink);
+  background: var(--parchment-deep);
+  color: var(--ink);
+  text-transform: uppercase;
+}
 
 .idea h3 {
   font-family: var(--font-pixel);

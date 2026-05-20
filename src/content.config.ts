@@ -11,6 +11,7 @@ const ideas = defineCollection({
     status: z.enum(['shipped', 'wip', 'queued']),
     difficulty: z.number().int().min(1).max(5),
     date: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
     tools: z.array(z.string()).default([]),
     reads: z.number().int().nonnegative().optional(),
     progress: z.number().int().min(0).max(100).optional(),

@@ -6,6 +6,7 @@ category: "ai-coding"
 status: "shipped"
 difficulty: 2
 date: 2026-04-29
+tags: ["AI Coding", "Freelance"]
 tools: ["CodeIgniter 4", "PHP 8", "MySQL", "Tailwind CSS", "MidJourney", "Claude Code", "Docker"]
 liveUrl: "https://market.lifestyleandtravel.com"
 repoUrl: "https://github.com/90n9/ltmarket"
