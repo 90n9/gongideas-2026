@@ -1,5 +1,5 @@
 ---
-title: "L+T Market — AI-Assisted Voucher Marketplace"
+title: "L+T Market — Voucher Marketplace"
 ideaId: "002"
 summary: "Freelance project ล่าสุด — voucher booking sub-site ของ lifestyleandtravel.com, ใช้ AI ตั้งแต่ design, hero image, ถึง code ทั้ง stack"
 category: "ai-coding"

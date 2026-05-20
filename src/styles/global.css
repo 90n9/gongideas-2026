@@ -1226,7 +1226,7 @@ footer {
   font-size: 17px;
   line-height: 1.55;
   color: var(--ink-soft);
-  max-width: 640px;
+  max-width: 100%;
 }
 .idea-title-block .meta-tags {
   display: flex;

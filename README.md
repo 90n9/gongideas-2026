@@ -101,6 +101,23 @@ If `relatedIdea` is set, the post page renders a cross-link card to that idea.
 - Thai glyphs fall back through the font stacks: pixel/mono fonts → Noto Sans Thai. Don't reorder the stacks in `:root`.
 - The Bulby mascot exists in two places: an animated inline SVG in `src/components/BulbySprite.astro`, and `public/assets/bulby.svg` used as favicon + brand mark. Keep them visually consistent.
 
+## Deployment
+
+Hosted on a Hostinger VPS (`72.62.65.76`) via **Dokploy** + **Docker** + **Traefik**.
+
+| | |
+|---|---|
+| **Live URLs** | `https://gongideas.com`, `https://www.gongideas.com` |
+| **Build** | `Dockerfile` — node:20-alpine builds `dist/`, nginx:alpine serves it |
+| **CI/CD** | Push to `main` → GitHub App webhook → Dokploy auto-deploys |
+| **SSL** | Let's Encrypt via Traefik (auto-renews) |
+| **DNS** | Cloudflare — A record `@` → `72.62.65.76` (DNS only), CNAME `www` → `gongideas.com` |
+
+To deploy manually: push to `main`, or call the webhook:
+```
+POST http://srv1168618.hstgr.cloud:3000/api/deploy/yC9yZqQ-vRyoNQLVU4Dq8
+```
+
 ## Scripts
 
 | Script | What it does |
