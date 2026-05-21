@@ -22,7 +22,10 @@ function relLabel(d: Date, ref: Date): string {
 ---
 <a class="log-line" href={`/blog/${id}/`}>
   <span class="date">{relLabel(data.date, now)}</span>
-  <span class="title">{data.title}</span>
+  <span class="log-middle">
+    <span class="title">{data.title}</span>
+    {data.summary && <span class="summary">{data.summary}</span>}
+  </span>
   <span class="tags">
     {data.tags.map(tag => <span class="tag">#{tag}</span>)}
   </span>

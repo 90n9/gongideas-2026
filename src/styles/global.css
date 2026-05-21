@@ -124,9 +124,12 @@ a { color: inherit; }
   min-width: 0;
   flex: 1 1 auto;
   max-width: 60%;
+  cursor: pointer;
 }
 .hud-latest:hover .hud-latest-title {
   color: var(--orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .hud-latest-label {
   color: var(--parchment);
@@ -795,7 +798,7 @@ section { padding: 56px 0 40px; }
   gap: 18px;
   padding: 14px 0;
   border-bottom: 1px dashed rgba(245,235,216,0.2);
-  align-items: baseline;
+  align-items: start;
   text-decoration: none;
   color: inherit;
 }
@@ -805,6 +808,12 @@ section { padding: 56px 0 40px; }
   font-family: var(--font-pixel);
   font-size: 9px;
   letter-spacing: 0.05em;
+  padding-top: 4px;
+}
+.log-middle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .log-line .title {
   font-family: var(--font-body);
@@ -814,7 +823,15 @@ section { padding: 56px 0 40px; }
   letter-spacing: 0;
   transition: color 100ms;
 }
+.log-line .summary {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  transition: color 100ms;
+}
 .log-line:hover .title { color: var(--mint); }
+.log-line:hover .summary { color: rgba(245,235,216,0.6); }
 .log-line .tags {
   display: flex; gap: 6px; flex-wrap: wrap;
   justify-content: flex-end;
@@ -1887,8 +1904,9 @@ footer {
   .devlog .term-bar > .meta-end { display: none; }
   .devlog .lines { padding: 14px 16px 18px; font-size: 16px; }
   .log-line { grid-template-columns: 1fr; gap: 6px; padding: 12px 0; }
-  .log-line .date { font-size: 9px; }
+  .log-line .date { font-size: 9px; padding-top: 0; }
   .log-line .title { font-size: 16px; line-height: 1.4; word-break: break-word; overflow-wrap: anywhere; }
+  .log-line .summary { font-size: 13px; }
   .log-line .tags { justify-content: flex-start; gap: 6px; }
   .log-line .tag { font-size: 8px; padding: 3px 5px; }
   .term-prompt { font-size: 16px; }
