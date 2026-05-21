@@ -159,7 +159,13 @@ const ideaJsonLd = {
         <Content />
       </article>
 
-      <ShareButtons url={ideaUrl} title={data.title} kind="idea" />
+      <ShareButtons
+        url={ideaUrl}
+        title={data.title}
+        summary={data.summary}
+        tags={data.tags}
+        kind="idea"
+      />
 
       <nav class="entry-nav" aria-label="Idea navigation">
         {prev ? (

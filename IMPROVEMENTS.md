@@ -20,6 +20,14 @@ Audit pass on 2026-05-21. Grouped by impact. Status legend: `[ ]` todo · `[~]` 
 - [x] `gtag('event', 'share', { method, content_type, item_id })` fires on click for both share-anchor and copy-link interactions.
 - [x] While in there: removed the three remaining hardcoded `https://gongideas.com` literals in `ideas/[slug].astro`, now uses `Astro.site`.
 
+### Share-button follow-ups — DONE (2026-05-21)
+
+- [x] **Web Share API** (`▶ SHARE` button, mint). Rendered with `hidden` attr; script unhides only when `typeof navigator.share === 'function'`. Click triggers `navigator.share({ title, text, url })`. AbortError (user dismissed) silenced; other errors warn-logged.
+- [x] **Clipboard fallback** with three-tier ladder: `navigator.clipboard.writeText` → `document.execCommand('copy')` via off-screen textarea → `✗ FAILED` pink state. Secure-context guard before reaching for the modern API.
+- [x] **X intent text enriched** with up to 3 hashtags built from `tags` prop (spaces stripped). Falls back to just the title when no tags.
+- [x] **LinkedIn share URL** now includes `&title=` (previously the platform inferred from OG, which was sometimes stale during cache windows).
+- [x] **a11y**: `aria-label` for X is now "Share on X (formerly Twitter)" — disambiguates the single-character label for screen readers. All other platforms got explicit aria-labels too.
+
 ### Bonus fixes folded into the same commit
 
 - [x] `<html lang>` now a layout prop, default `th` (primary audience is Thai). `og:locale` set to `th_TH` with `en_US` as alternate.
