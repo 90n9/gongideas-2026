@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TalkToBulby from '../../components/TalkToBulby.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 
 export async function getStaticPaths() {
   const ideas = await getCollection('ideas');
@@ -55,6 +56,8 @@ const coverIsImage = !!data.cover && data.cover.startsWith('/');
 const liveLabel = data.liveUrl?.includes('youtube.com') ? '▶ WATCH' : '▶ VISIT SITE';
 
 const canonicalImage = data.cover && data.cover.startsWith('/') ? data.cover : '/og-default.png';
+const siteOrigin = Astro.site ?? new URL('https://gongideas.com/');
+const ideaUrl = new URL(`/ideas/${id}/`, siteOrigin).href;
 const ideaJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
@@ -64,11 +67,11 @@ const ideaJsonLd = {
   creator: {
     '@type': 'Person',
     name: 'Narathip Harijiratiwong',
-    url: 'https://gongideas.com/about/',
+    url: new URL('/about/', siteOrigin).href,
   },
-  image: new URL(canonicalImage, 'https://gongideas.com').href,
+  image: new URL(canonicalImage, siteOrigin).href,
   keywords: data.tags.join(', '),
-  url: new URL(`/ideas/${id}/`, 'https://gongideas.com').href,
+  url: ideaUrl,
   ...(data.liveUrl ? { sameAs: data.liveUrl } : {}),
 };
 ---
@@ -155,6 +158,8 @@ const ideaJsonLd = {
       <article class="prose">
         <Content />
       </article>
+
+      <ShareButtons url={ideaUrl} title={data.title} kind="idea" />
 
       <nav class="entry-nav" aria-label="Idea navigation">
         {prev ? (

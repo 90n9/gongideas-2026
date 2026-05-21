@@ -11,6 +11,15 @@ Audit pass on 2026-05-21. Grouped by impact. Status legend: `[ ]` todo · `[~]` 
 - [x] **404 page.** `src/pages/404.astro` — parchment/pixel themed, Bulby sprite, HOME + IDEAS CTAs, mobile breakpoint, bilingual flavor copy. `Nav.active` union widened to `'none'` so the 404 doesn't highlight a real nav item.
 - [x] **OG share image asset.** `public/og-default.png` — 1200×630, parchment background, GONGIDEAS wordmark + Bulby sprite + tagline. Generated from existing brand SVGs via `sharp`.
 
+### Share buttons on detail pages — DONE (2026-05-21)
+
+- [x] `src/components/ShareButtons.astro` — X, Facebook, LinkedIn, LINE, Copy link.
+- [x] Wired into `blog/[slug].astro` (after content, before related-idea card) and `ideas/[slug].astro` (after content, before prev/next nav).
+- [x] Absolute prod URLs built from `Astro.site`; titles `encodeURIComponent`-safe.
+- [x] On-brand styling (parchment + pix-frame + pixel font); honors `prefers-reduced-motion`; 640px breakpoint.
+- [x] `gtag('event', 'share', { method, content_type, item_id })` fires on click for both share-anchor and copy-link interactions.
+- [x] While in there: removed the three remaining hardcoded `https://gongideas.com` literals in `ideas/[slug].astro`, now uses `Astro.site`.
+
 ### Bonus fixes folded into the same commit
 
 - [x] `<html lang>` now a layout prop, default `th` (primary audience is Thai). `og:locale` set to `th_TH` with `en_US` as alternate.

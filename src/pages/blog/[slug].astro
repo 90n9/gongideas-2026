@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TalkToBulby from '../../components/TalkToBulby.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -95,6 +96,12 @@ const blogJsonLd = {
           </div>
         </div>
       </article>
+
+      <ShareButtons
+        url={new URL(`/blog/${id}/`, siteOrigin).href}
+        title={data.title}
+        kind="post"
+      />
 
       {related && (
         <a class="entry-nav-card" href={`/ideas/${related.id}/`} style="display: block; margin-bottom: 32px;">

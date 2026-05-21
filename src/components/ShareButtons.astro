@@ -1,0 +1,146 @@
+---
+interface Props {
+  url: string;
+  title: string;
+  kind?: 'idea' | 'post';
+}
+const { url, title, kind = 'post' } = Astro.props;
+
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+
+const targets = [
+  { id: 'x',        label: 'X',        href: `https://x.com/intent/post?url=${encodedUrl}&text=${encodedTitle}` },
+  { id: 'facebook', label: 'FB',       href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
+  { id: 'linkedin', label: 'LINKEDIN', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` },
+  { id: 'line',     label: 'LINE',     href: `https://social-plugins.line.me/lineit/share?url=${encodedUrl}` },
+];
+
+const heading = kind === 'idea' ? '▶ SHARE THIS QUEST' : '▶ SHARE THIS PATCH';
+---
+<section class="share-block" aria-label="Share">
+  <div class="share-head">
+    <span class="lab">{heading}</span>
+    <span class="hint">// signal-boost via ally</span>
+  </div>
+  <div class="share-row">
+    {targets.map(t => (
+      <a
+        class={`share-btn share-${t.id}`}
+        href={t.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-platform={t.id}
+        aria-label={`Share on ${t.label}`}
+      >
+        {t.label}
+      </a>
+    ))}
+    <button class="share-btn copy" type="button" data-share-copy data-url={url} aria-label="Copy link to clipboard">
+      ▷ COPY LINK
+    </button>
+  </div>
+</section>
+
+<style>
+  .share-block {
+    margin: 32px 0 36px;
+    padding: 16px 20px;
+    background: var(--parchment);
+    border: 2px solid var(--ink);
+    box-shadow: 4px 4px 0 0 var(--ink);
+  }
+  .share-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .share-head .lab {
+    font-family: var(--font-pixel);
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .share-head .hint {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .share-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .share-btn {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    line-height: 1;
+    padding: 11px 14px;
+    border: 2px solid var(--ink);
+    background: var(--parchment-deep);
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, background 0.12s;
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+  .share-btn:hover {
+    background: var(--yellow);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 0 var(--ink);
+  }
+  .share-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+  .share-btn:focus-visible {
+    outline: 2px dashed var(--orange);
+    outline-offset: 2px;
+  }
+  .share-btn.copy {
+    background: var(--orange);
+    color: var(--parchment);
+  }
+  .share-btn.copy:hover { background: var(--yellow); color: var(--ink); }
+  .share-btn.copy.copied { background: var(--mint); color: var(--ink); }
+  @media (max-width: 640px) {
+    .share-btn { font-size: 9px; padding: 9px 11px; }
+    .share-block { padding: 14px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .share-btn { transition: none; }
+    .share-btn:hover, .share-btn:active { transform: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-share-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.url;
+      if (!url) return;
+      navigator.clipboard.writeText(url).then(() => {
+        const original = btn.textContent ?? '';
+        btn.textContent = '✓ COPIED!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.(
+        'event', 'share', { method: 'copy_link', content_type: 'page', item_id: url }
+      );
+    });
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('.share-btn[data-platform]').forEach(a => {
+    a.addEventListener('click', () => {
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.(
+        'event', 'share', { method: a.dataset.platform, content_type: 'page', item_id: a.href }
+      );
+    });
+  });
+</script>
