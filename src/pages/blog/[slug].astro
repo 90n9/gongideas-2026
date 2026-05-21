@@ -93,3 +93,24 @@ if (data.relatedIdea) {
   <TalkToBulby />
 
 </BaseLayout>
+
+<script>
+  document.querySelectorAll('.prose pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'COPY';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = (code ?? pre).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'COPIED!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'COPY';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+</script>

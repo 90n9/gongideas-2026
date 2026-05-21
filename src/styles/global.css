@@ -1365,7 +1365,7 @@ footer {
   color: var(--ink-soft);
 }
 .prose code {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 16px;
   background: var(--ink);
   color: var(--mint);
@@ -1378,10 +1378,36 @@ footer {
   box-shadow: 4px 4px 0 0 var(--orange);
   padding: 18px 20px;
   margin: 22px 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.55;
   overflow-x: auto;
+  position: relative;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: 1px solid var(--mint);
+  color: var(--mint);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 4px 8px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  line-height: 1;
+}
+.copy-btn:hover {
+  opacity: 1;
+  background: var(--mint);
+  color: var(--ink);
+}
+.copy-btn.copied {
+  border-color: var(--orange);
+  color: var(--orange);
+  opacity: 1;
 }
 .prose pre code {
   background: transparent;
@@ -1562,6 +1588,7 @@ footer {
   color: rgba(245,235,216,0.85);
 }
 .post-shell .prose code { background: #0d0d1a; }
+.post-shell .prose pre code { background: transparent; }
 .post-shell .prose pre {
   background: #0d0d1a;
   border-color: var(--ink-soft);
