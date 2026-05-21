@@ -13,19 +13,19 @@ tags: ["ai-coding", "automation", "claude"]
 
 ## Claude in Chrome
 
-ตัวนี้ผมเปิดก่อนเสมอถ้าไม่มีเหตุผลพิเศษ เป็น Chrome extension ของ Anthropic เอง — ติดตั้ง login ครั้งเดียวแล้วใช้เลย
+ตัวนี้ผมเปิดก่อนเสมอถ้าไม่มีเหตุผลพิเศษ เป็น [Chrome extension ของ Anthropic](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn) — ติดตั้ง login ครั้งเดียวแล้วใช้เลย
 
-สิ่งที่มัน win คือมัน control Chrome ตัวที่ผม login อยู่จริง ๆ session ของ Gmail, Analytics, Midjourney ที่ค้างไว้ → ใช้ได้เลย ไม่ต้อง re-auth, ไม่ต้องจัดการ cookie อะไรทั้งนั้น
+ถ้าต้องการให้ AI เข้า browser ไปทำงานแทนในเว็บที่ต้อง login และเรา login ค้างไว้อยู่แล้ว — ตัวนี้ใช้ได้เลย มัน control Chrome ตัวที่เรา login อยู่จริง ๆ session ของ Gmail, Analytics, Midjourney ที่ค้างไว้ → ใช้ได้เลย ไม่ต้อง re-auth, ไม่ต้องจัดการ cookie อะไรทั้งนั้น
 
 > ถ้าโจทย์คือ "ไปทำอะไรซักอย่างบนเว็บที่ผมล็อกอินอยู่แล้ว" — ตัวนี้คือ default.
 
-ใช้ได้ทั้งจาก Claude Code (CLI) และ Claude.ai บนเว็บ extension เดียวกันเลย
+เป็น default MCP ที่มีให้ใน Claude อยู่แล้ว ไม่ต้องเซตอัพเพิ่ม ใช้ได้สองทาง: จาก Claude Code (CLI) ผ่าน MCP protocol และจาก side panel ที่ extension สร้างไว้ใน Chrome (ซึ่งก็คือหน้า co-work ใน Claude app นั่นเอง) — ทั้งสองทางเชื่อมผ่าน extension ตัวเดียวกัน
+
+**ข้อจำกัด:** ถ้าต้องการให้ Claude ใช้ Chrome profile อื่นที่ไม่ใช่ profile ที่ login Claude อยู่ จะติดปัญหา — ทางแก้คือเปลี่ยนไปใช้ Playwright แทน
 
 ## Playwright MCP
 
-ใช้ตอนต้องการ browser profile แยกต่อ project หรือต้องคุม session หลายตัวพร้อมกัน
-
-เซตอัพใน `.mcp.json` แบบนี้
+สำหรับคนที่มี Chrome profile หลายตัวแยกกัน เช่น profile งานประจำ กับ profile account ส่วนตัว — ตัวนี้ช่วยได้ เราสามารถระบุได้เลยว่าอยากให้ AI ใช้ browser profile ไหน โดยสร้างไฟล์ `.mcp.json` ไว้ใน folder ที่เราจะรัน `claude` command
 
 ```json
 {
@@ -40,15 +40,37 @@ tags: ["ai-coding", "automation", "claude"]
 
 `--user-data-dir` คือตัวสำคัญ — login ทิ้งไว้ใน path นี้รอบเดียว รอบหน้าเปิดมา session ยังอยู่ครบ จะแยก dir ต่อ project ก็ได้ ไม่ต้อง logout/login ซ้ำทุกครั้ง
 
+สำหรับผมแล้ว Claude in Chrome ใช้ตอนที่ต้องการ browse ผ่าน profile งานประจำที่ login ค้างไว้อยู่แล้ว ส่วน Playwright MCP จะใช้ตอนต้องการ profile account ส่วนตัว หรือตอนที่ Claude in Chrome ติดปัญหา หรืออยากได้ browser แยก session มาเทสอะไรบางอย่าง
+
 ## Playwright CLI + Skill
 
-ใช้ตอน task ใหญ่ที่ MCP กิน token เยอะเกินไป วิธีคือตั้ง skill ให้ Claude รู้ว่าเวลาจะทำ web automation ให้เขียน `.ts` script แล้ว `npx playwright test` รันเอง ไม่ผ่าน MCP เลย
+ใช้ตอน task ใหญ่ที่ MCP กิน token เยอะเกินไป วิธีคือใช้ [Playwright CLI](https://github.com/microsoft/playwright-cli) ผ่าน skill แทน ไม่ผ่าน MCP เลย — CLI ไม่โหลด tool schema และ DOM snapshot เข้า context ทำให้กิน token น้อยกว่าเยอะ
 
-มันกิน token น้อยกว่าเพราะไม่ส่ง DOM snapshot กลับมาทุก step, replay ได้ และ debug ง่ายกว่าเยอะเพราะเห็น script เต็ม ๆ แลกมาด้วย setup ที่นานกว่า และไม่เหมาะงานที่ยังไม่รู้ว่า DOM หน้าตาเป็นยังไง ผมใช้ตัวนี้ตอนรู้ flow ชัดแล้วและต้องรันซ้ำหลายรอบ
+ติดตั้งด้วย
+
+```bash
+npm install -g @playwright/cli@latest
+playwright-cli install --skills
+```
+
+คำสั่งที่สองคือสิ่งสำคัญ — มันจะ install skill ไว้ให้ Claude Code (หรือ coding agent ตัวอื่น) รู้เองว่าเวลาทำ web automation ให้เรียก `playwright-cli` แทน เราไม่ต้องเขียน skill เอง
+
+ถ้าอยากระบุ browser profile หรือ option อื่น ๆ ต่อ project วาง config ไว้ที่ `.playwright/cli.config.json` แล้ว CLI จะ load auto ไม่ต้องพิมพ์ flag ซ้ำทุกครั้ง
+
+```json
+{
+  "browser": {
+    "userDataDir": "/Users/me/.chrome-profiles/personal",
+    "launchOptions": { "channel": "chrome", "headless": false }
+  }
+}
+```
+
+login รอบเดียวใน path นั้น รอบหน้าเปิดมา session ยังอยู่ครบ ไม่ต้อง auth ซ้ำ
+
+เวลาสั่งงาน Claude จะเขียน CLI command ต่อ step (เช่น `playwright-cli open`, `click`, `type`, `snapshot`) แทนการ round-trip DOM ผ่าน MCP มันกิน token น้อยกว่าเยอะ, replay ได้ และ debug ง่ายเพราะเห็น command เต็ม ๆ แลกมาด้วย setup ที่นานกว่านิดหน่อย ผมใช้ตัวนี้ตอนรู้ flow ชัดแล้วและต้องรันซ้ำหลายรอบ
 
 ## โยนเข้า sub-agent เถอะ
-
-นี่คือบทเรียนแพงที่สุดของผม
 
 Web automation กิน token หนักมาก ทุก step มันส่ง DOM กับ screenshot กลับมา ถ้าให้ main context ทำเอง context window เต็มใน 5–10 step แล้ว Claude เริ่มลืม goal เดิม
 
