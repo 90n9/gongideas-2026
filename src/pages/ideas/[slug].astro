@@ -53,8 +53,34 @@ const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
 
 const coverIsImage = !!data.cover && data.cover.startsWith('/');
 const liveLabel = data.liveUrl?.includes('youtube.com') ? '▶ WATCH' : '▶ VISIT SITE';
+
+const canonicalImage = data.cover && data.cover.startsWith('/') ? data.cover : '/og-default.png';
+const ideaJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: data.title,
+  description: data.summary,
+  dateCreated: data.date.toISOString(),
+  creator: {
+    '@type': 'Person',
+    name: 'Narathip Harijiratiwong',
+    url: 'https://gongideas.com/about/',
+  },
+  image: new URL(canonicalImage, 'https://gongideas.com').href,
+  keywords: data.tags.join(', '),
+  url: new URL(`/ideas/${id}/`, 'https://gongideas.com').href,
+  ...(data.liveUrl ? { sameAs: data.liveUrl } : {}),
+};
 ---
-<BaseLayout title={`${data.title} — Idea #${data.ideaId}`} description={data.summary} active="ideas">
+<BaseLayout
+  title={`${data.title} — Idea #${data.ideaId}`}
+  description={data.summary}
+  active="ideas"
+  image={canonicalImage}
+  type="article"
+  publishDate={data.date}
+  structuredData={ideaJsonLd}
+>
 
   <section class="idea-hero">
     <div class="container">

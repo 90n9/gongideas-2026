@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://gongideas.com',
@@ -6,4 +7,10 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/404'),
+      changefreq: 'weekly',
+    }),
+  ],
 });

@@ -7,26 +7,48 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
-  active?: 'home' | 'ideas' | 'blog' | 'about';
+  active?: 'home' | 'ideas' | 'blog' | 'about' | 'none';
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  publishDate?: Date;
+  structuredData?: object | object[];
+  lang?: string;
 }
 const {
   title,
   description = "Gong's lab: AI Coding, AI Automation, AI Image/Video Gen, Game Dev, and personal AI projects.",
   active = 'home',
+  image = '/og-default.png',
+  imageAlt,
+  type = 'website',
+  publishDate,
+  structuredData,
+  lang = 'th',
 } = Astro.props;
 
 const fullTitle = title.includes('GongIdeas') ? title : `${title} — GongIdeas`;
+
+const siteOrigin = Astro.site ?? new URL('/', 'https://gongideas.com');
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+const ogImage = new URL(image, siteOrigin).href;
+const ogImageAlt = imageAlt ?? description;
+
+const jsonLdEntries = structuredData
+  ? (Array.isArray(structuredData) ? structuredData : [structuredData])
+  : [];
 
 const GA_ID = 'G-M7LKC1PBD5';
 const enableGA = import.meta.env.PROD;
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="icon" type="image/svg+xml" href="/assets/bulby.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,7 +58,25 @@ const enableGA = import.meta.env.PROD;
   />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={type} />
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" type="application/rss+xml" title="GongIdeas Blog" href="/rss.xml" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:alt" content={ogImageAlt} />
+  <meta property="og:site_name" content="GongIdeas" />
+  <meta property="og:locale" content={lang === 'th' ? 'th_TH' : 'en_US'} />
+  <meta property="og:locale:alternate" content={lang === 'th' ? 'en_US' : 'th_TH'} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  {publishDate && (
+    <meta property="article:published_time" content={publishDate.toISOString()} />
+  )}
+  {jsonLdEntries.map(item => (
+    <script type="application/ld+json" set:html={JSON.stringify(item)} />
+  ))}
   {enableGA && (
     <>
       <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>

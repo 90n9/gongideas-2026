@@ -32,8 +32,38 @@ let related: CollectionEntry<'ideas'> | null = null;
 if (data.relatedIdea) {
   related = (await getEntry('ideas', data.relatedIdea)) ?? null;
 }
+
+const canonicalImage = data.heroImage ?? '/og-default.png';
+const siteOrigin = Astro.site ?? new URL('https://gongideas.com/');
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.summary,
+  datePublished: data.date.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Narathip Harijiratiwong',
+    url: new URL('/about/', siteOrigin).href,
+  },
+  image: new URL(canonicalImage, siteOrigin).href,
+  keywords: data.tags.join(', '),
+  inLanguage: 'en',
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': new URL(`/blog/${id}/`, siteOrigin).href,
+  },
+};
 ---
-<BaseLayout title={data.title} description={data.summary} active="blog">
+<BaseLayout
+  title={data.title}
+  description={data.summary}
+  active="blog"
+  image={canonicalImage}
+  type="article"
+  publishDate={data.date}
+  structuredData={blogJsonLd}
+>
 
   <section class="idea-hero">
     <div class="container">
@@ -101,7 +131,7 @@ if (data.relatedIdea) {
     btn.textContent = 'COPY';
     btn.addEventListener('click', () => {
       const code = pre.querySelector('code');
-      const text = (code ?? pre).innerText;
+      const text = (code ?? pre).textContent ?? '';
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'COPIED!';
         btn.classList.add('copied');

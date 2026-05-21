@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BulbySprite from '../components/BulbySprite.astro';
+import TalkToBulby from '../components/TalkToBulby.astro';
+---
+<BaseLayout title="404 — Lost in the Dungeon" description="That page doesn't exist. Bulby is lost." active="home">
+
+  <section class="lost-section">
+    <div class="container narrow">
+      <div class="pix-frame lost-panel">
+        <div class="lost-kicker">◆ ERROR · MAP_NOT_FOUND ◆</div>
+
+        <div class="lost-grid">
+          <div class="lost-copy">
+            <h1 class="lost-code">404</h1>
+            <div class="lost-sub">// quest log: page not found</div>
+            <p class="lost-flavor">
+              ดูเหมือนหลงทาง — Bulby เดินวนใน dungeon นี้มาสามรอบแล้ว.
+              That map doesn't exist in this build. Try heading home,
+              or go raid the idea vault.
+            </p>
+
+            <div class="lost-cta">
+              <a href="/" class="btn primary">[ HOME ]</a>
+              <a href="/ideas/" class="btn">[ IDEAS ]</a>
+            </div>
+          </div>
+
+          <div class="lost-bulby">
+            <div class="lost-bulby-label">PARTY MEMBER · LOST</div>
+            <BulbySprite width={160} height={200} />
+            <div class="lost-bulby-name">BULBY · ???</div>
+            <div class="lost-bulby-line">// status: confused</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <TalkToBulby />
+
+</BaseLayout>
+
+<style>
+  .lost-section {
+    padding: 72px 0 96px;
+  }
+
+  .lost-panel {
+    padding: 32px 28px;
+    text-align: left;
+  }
+
+  .lost-kicker {
+    font-family: var(--font-pixel);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .lost-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .lost-copy {
+    min-width: 0;
+  }
+
+  .lost-code {
+    font-family: var(--font-pixel);
+    font-size: clamp(72px, 14vw, 128px);
+    line-height: 1;
+    margin: 0;
+    color: var(--ink);
+    text-shadow: 6px 6px 0 var(--orange);
+    letter-spacing: 0.04em;
+  }
+
+  .lost-sub {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--muted);
+    margin-top: 18px;
+  }
+
+  .lost-flavor {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 16px 0 24px;
+    max-width: 46ch;
+  }
+
+  .lost-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .lost-bulby {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px;
+    border: 2px dashed var(--ink);
+    background: var(--parchment-deep);
+  }
+
+  .lost-bulby-label {
+    font-family: var(--font-pixel);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .lost-bulby-name {
+    font-family: var(--font-pixel);
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+
+  .lost-bulby-line {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--pink);
+  }
+
+  @media (max-width: 640px) {
+    .lost-section {
+      padding: 48px 0 72px;
+    }
+
+    .lost-panel {
+      padding: 24px 18px;
+    }
+
+    .lost-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .lost-bulby {
+      order: -1;
+      align-self: center;
+    }
+
+    .lost-code {
+      text-align: center;
+    }
+
+    .lost-sub,
+    .lost-flavor {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .lost-cta {
+      justify-content: center;
+    }
+  }
+</style>

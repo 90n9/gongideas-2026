@@ -21,8 +21,36 @@ const wipCount = allIdeas.filter(i => i.data.status === 'wip').length;
 const latestWip = allIdeas.find(i => i.data.status === 'wip');
 const latestShipped = allIdeas.find(i => i.data.status === 'shipped');
 const latestPost = allPosts[0];
+
+const homeDescription = "Gong's lab: AI Coding, AI Automation, AI Image/Video Gen, Game Dev, and personal AI projects.";
+const homeStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'GongIdeas',
+    url: 'https://gongideas.com/',
+    description: homeDescription,
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Narathip Harijiratiwong',
+    alternateName: 'Gong',
+    url: 'https://gongideas.com/about/',
+    sameAs: [
+      'https://github.com/90n9',
+      'https://www.linkedin.com/in/narathip-harijiratiwong-a96a0683/',
+      'https://www.facebook.com/profile.php?id=61583997504846',
+    ],
+  },
+];
 ---
-<BaseLayout title="GongIdeas — Let's imagine come true." active="home">
+<BaseLayout
+  title="GongIdeas — Let's imagine come true."
+  active="home"
+  structuredData={homeStructuredData}
+>
 
   <section class="hero">
     <div class="container hero-grid">
