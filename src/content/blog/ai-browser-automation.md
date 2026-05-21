@@ -1,5 +1,5 @@
 ---
-title: "ให้ AI ทำงานบน browser ให้"
+title: "AI Browser Automation"
 summary: "สำหรับงานที่ต้องเข้า browser ไปทำเอง หรือต้อง copy ข้อมูลมาให้ AI อีกที — ลองเปลี่ยนให้ AI ทำ web automation เองดีกว่า"
 date: 2026-05-03
 tags: ["ai-coding", "automation", "claude"]
