@@ -2,13 +2,22 @@
 
 Audit pass on 2026-05-21. Grouped by impact. Status legend: `[ ]` todo · `[~]` in progress · `[x]` done.
 
-## High impact (in flight this session)
+## High impact — DONE (commit `b43869b`, 2026-05-21)
 
-- [~] **Social share / OG card.** Add `og:image`, `twitter:card`, `twitter:image` to `BaseLayout.astro`. Default + per-page override via `image` prop. Blog/idea detail pages pass their cover.
-- [~] **Canonical URL + RSS alternate link.** Add `<link rel="canonical" href={Astro.url}>` and `<link rel="alternate" type="application/rss+xml" ...>` in `BaseLayout`.
-- [~] **JSON-LD structured data.** `WebSite` + `Person` on home, `BlogPosting` on blog detail, `CreativeWork`/`Article` on idea detail.
-- [~] **Sitemap.** Install `@astrojs/sitemap`, add to `astro.config.mjs`, add `public/robots.txt`.
-- [~] **404 page.** `src/pages/404.astro` themed in parchment/pixel.
+- [x] **Social share / OG card.** `BaseLayout.astro` emits `og:image`, `og:image:alt`, `twitter:card=summary_large_image`, `twitter:image`. Defaults to `/og-default.png`; blog/idea detail pages override via `image` prop (blog uses optional `heroImage`, idea uses local `cover`).
+- [x] **Canonical URL + RSS alternate link.** Canonical built from `Astro.url.pathname` + `Astro.site`, respects `trailingSlash: 'always'`. `<link rel="alternate" type="application/rss+xml">` wired.
+- [x] **JSON-LD structured data.** `WebSite` + `Person` on home, `BlogPosting` on blog detail (with `mainEntityOfPage` as `{ @type: WebPage, @id }` object), `CreativeWork` on idea detail. All blocks parse as valid JSON; emitted as separate `<script type="application/ld+json">` tags.
+- [x] **Sitemap.** `@astrojs/sitemap` installed and registered. Filter excludes `/404/` (uses `endsWith` so it won't accidentally drop other URLs containing `404`). `public/robots.txt` points to `sitemap-index.xml`.
+- [x] **404 page.** `src/pages/404.astro` — parchment/pixel themed, Bulby sprite, HOME + IDEAS CTAs, mobile breakpoint, bilingual flavor copy. `Nav.active` union widened to `'none'` so the 404 doesn't highlight a real nav item.
+- [x] **OG share image asset.** `public/og-default.png` — 1200×630, parchment background, GONGIDEAS wordmark + Bulby sprite + tagline. Generated from existing brand SVGs via `sharp`.
+
+### Bonus fixes folded into the same commit
+
+- [x] `<html lang>` now a layout prop, default `th` (primary audience is Thai). `og:locale` set to `th_TH` with `en_US` as alternate.
+- [x] `robots` meta with `max-image-preview:large` so Google shows full OG image in rich results.
+- [x] Pre-existing `ts(2339) innerText` error in `blog/[slug].astro` copy-button script — fixed via `as HTMLElement` cast.
+- [x] `heroImage` schema tightened to `regex(/^(\/|https?:\/\/)/)` so relative typos surface at build time.
+- [x] All detail pages use `Astro.site` (with safe fallback) instead of hardcoded `https://gongideas.com`.
 
 ## Medium impact (queued — not in this session)
 
@@ -32,4 +41,10 @@ Audit pass on 2026-05-21. Grouped by impact. Status legend: `[ ]` todo · `[~]` 
 
 ## Notes / outstanding
 
-- An actual 1200×630 PNG for `public/og-default.png` must be hand-designed (Bulby + GONGIDEAS wordmark on parchment). The meta tag plumbing is wired and will pick it up the moment the file lands.
+- Replace `public/og-default.png` with a polished version when there's time — the auto-generated one is on-brand but not designer-tuned.
+- After deploy, paste the prod URLs into [Twitter Card Validator](https://cards-dev.twitter.com/validator), [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/), and [Google Rich Results Test](https://search.google.com/test/rich-results) to confirm card previews and JSON-LD render as expected.
+- Submit `https://gongideas.com/sitemap-index.xml` to Google Search Console.
+
+## Session log
+
+- **2026-05-21** — High-impact pass (this session). Two commits on `main`: `b43869b` (SEO + sitemap + 404 + OG) and `e419537` (MynahPad idea #004). Verified via build + HTTP smoke (15 routes 200, JSON-LD valid, sitemap clean, 404 serves correctly).
