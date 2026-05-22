@@ -1,16 +1,18 @@
 #!/usr/bin/env node
-// Generate OG images for blog posts: Bulby + speech bubble carrying title/summary.
+// Generate OG images for blog posts: Bulby + speech bubble carrying the title.
 // Output: public/og/<slug>.png (1200x630)
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import opentype from 'opentype.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const BLOG_DIR = path.join(ROOT, 'src/content/blog');
 const OUT_DIR = path.join(ROOT, 'public/og');
+const FONT_PATH = path.join(__dirname, 'fonts/PressStart2P-Regular.ttf');
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -53,36 +55,51 @@ function escapeXml(s) {
     .replace(/'/g, '&apos;');
 }
 
-// Word-wrap aware of CJK/Thai (no spaces between Thai words; break on char).
-function wrapText(text, maxCharsLatin) {
-  const isThai = /[฀-๿]/.test(text);
+// Word-wrap by character count (Press Start 2P is monospace).
+function wrapByCols(text, cols) {
+  const words = text.split(/\s+/);
   const lines = [];
-  if (isThai) {
-    // Wrap by grapheme count — Thai chars are visually ~1 em.
-    const maxChars = Math.floor(maxCharsLatin * 0.78);
-    let buf = '';
-    for (const ch of text) {
-      buf += ch;
-      if (buf.length >= maxChars && /[\s฀-๿]/.test(ch)) {
-        lines.push(buf.trim());
-        buf = '';
-      }
+  let buf = '';
+  for (const w of words) {
+    if (w.length > cols) {
+      // hard-break long token
+      if (buf) { lines.push(buf); buf = ''; }
+      for (let i = 0; i < w.length; i += cols) lines.push(w.slice(i, i + cols));
+      continue;
     }
-    if (buf) lines.push(buf.trim());
-  } else {
-    const words = text.split(/\s+/);
-    let buf = '';
-    for (const w of words) {
-      if ((buf + ' ' + w).trim().length > maxCharsLatin) {
-        lines.push(buf.trim());
-        buf = w;
-      } else {
-        buf = (buf + ' ' + w).trim();
-      }
+    const candidate = buf ? buf + ' ' + w : w;
+    if (candidate.length > cols) {
+      lines.push(buf);
+      buf = w;
+    } else {
+      buf = candidate;
     }
-    if (buf) lines.push(buf);
   }
+  if (buf) lines.push(buf);
   return lines;
+}
+
+// Pick the largest font size such that wrapped title fits inside (boxW, boxH).
+// Width is measured via opentype's actual glyph advance.
+function fitTitle(font, text, boxW, boxH) {
+  const lineHeightRatio = 1.5;
+  for (let size = 56; size >= 18; size -= 2) {
+    const cellW = font.getAdvanceWidth('M', size); // Press Start 2P is monospace
+    const cellH = size * lineHeightRatio;
+    const cols = Math.max(6, Math.floor(boxW / cellW));
+    const lines = wrapByCols(text, cols);
+    const widest = Math.max(...lines.map(l => font.getAdvanceWidth(l, size)));
+    const blockH = lines.length * cellH;
+    if (widest <= boxW && blockH <= boxH) {
+      return { size, cellH, lines };
+    }
+  }
+  // Fallback: smallest size, possibly clipped.
+  const size = 18;
+  const cellW = font.getAdvanceWidth('M', size);
+  const cellH = size * lineHeightRatio;
+  const cols = Math.max(4, Math.floor(boxW / cellW));
+  return { size, cellH, lines: wrapByCols(text, cols) };
 }
 
 // Bulby — pixel mascot, scaled-up SVG. Static (no animation) for image rendering.
@@ -191,27 +208,25 @@ function defs() {
   `;
 }
 
-function brandStrip() {
-  return `
-    <g>
-      <text x="60" y="86" fill="${COLORS.ink}" font-family="'Courier New', monospace" font-size="22" font-weight="700" letter-spacing="4">
-        ▶ GONGIDEAS · BLOG
-      </text>
-    </g>
-  `;
+function brandStrip(font) {
+  return textPath(font, 'GONGIDEAS / BLOG', 62, 86, 20, COLORS.ink);
 }
 
-function footerStrip(dateStr) {
-  return `
-    <g>
-      <text x="60" y="${HEIGHT - 50}" fill="${COLORS.muted}" font-family="'Courier New', monospace" font-size="20" letter-spacing="3">
-        gongideas.com  ·  ${escapeXml(dateStr)}
-      </text>
-    </g>
-  `;
+function footerStrip(font, dateStr) {
+  return textPath(font, `gongideas.com  ${dateStr}`, 62, HEIGHT - 50, 16, COLORS.muted);
 }
 
-function buildSvg({ title, summary, date }) {
+function textPath(font, text, x, y, fontSize, fill) {
+  if (!text) return '';
+  const p = font.getPath(text, x, y, fontSize);
+  return `<path d="${p.toPathData(2)}" fill="${fill}"/>`;
+}
+
+function textWidth(font, text, fontSize) {
+  return font.getAdvanceWidth(text, fontSize);
+}
+
+function buildSvg({ title, date, font }) {
   const bulbyScale = 22;          // 16 * 22 = 352 wide; 20 * 22 = 440 tall
   const bulbyW = 16 * bulbyScale;
   const bulbyH = 20 * bulbyScale;
@@ -224,55 +239,37 @@ function buildSvg({ title, summary, date }) {
   const bubbleH = HEIGHT - bubbleY - 110;
   const tailY = bubbleY + bubbleH * 0.55;
 
-  // text wrapping — keep title short, summary fits below
-  let titleLines = wrapText(title, 22);
-  if (titleLines.length > 3) titleLines = wrapText(title, 26).slice(0, 3);
-  let summaryLines = wrapText(summary, 42);
-  // hard cap summary to keep within bubble
-  const maxSummaryLines = titleLines.length >= 3 ? 2 : 3;
-  if (summaryLines.length > maxSummaryLines) {
-    summaryLines = summaryLines.slice(0, maxSummaryLines);
-    const last = summaryLines[maxSummaryLines - 1];
-    summaryLines[maxSummaryLines - 1] = last.replace(/[\s,.]*\S{0,8}$/, '') + '…';
-  }
+  // text box inside bubble
+  const padX = 56;
+  const padY = 56;
+  const textBoxW = bubbleW - padX * 2;
+  const textBoxH = bubbleH - padY * 2;
 
-  const titleFontSize = titleLines.length >= 3 ? 40 : (titleLines.length === 2 ? 48 : 56);
-  const titleLineH = titleFontSize * 1.2;
-  const summaryFontSize = 24;
-  const summaryLineH = summaryFontSize * 1.45;
+  const fit = fitTitle(font, title, textBoxW, textBoxH);
+  const blockH = fit.lines.length * fit.cellH;
+  // Vertically center the text block inside the bubble.
+  const startY = bubbleY + (bubbleH - blockH) / 2 + fit.size;
 
-  const padX = 48;
-  const padY = 58;
-  const titleStartY = bubbleY + padY + titleFontSize;
-  const summaryStartY = titleStartY + (titleLines.length - 1) * titleLineH + 36 + summaryFontSize;
-
-  const titleSvg = titleLines.map((ln, i) =>
-    `<text x="${bubbleX + padX}" y="${titleStartY + i * titleLineH}" fill="${COLORS.ink}"
-       font-family="'Helvetica Neue', 'Noto Sans Thai', sans-serif"
-       font-size="${titleFontSize}" font-weight="800" letter-spacing="-0.5">${escapeXml(ln)}</text>`
-  ).join('');
-
-  const summarySvg = summaryLines.map((ln, i) =>
-    `<text x="${bubbleX + padX}" y="${summaryStartY + i * summaryLineH}" fill="${COLORS.muted}"
-       font-family="'Helvetica Neue', 'Noto Sans Thai', sans-serif"
-       font-size="${summaryFontSize}" font-weight="400">${escapeXml(ln)}</text>`
-  ).join('');
+  const titleSvg = fit.lines
+    .map((ln, i) => textPath(font, ln, bubbleX + padX, startY + i * fit.cellH, fit.size, COLORS.ink))
+    .join('');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
   ${defs()}
   ${pixelFrame()}
-  ${brandStrip()}
+  ${brandStrip(font)}
   ${speechBubble({ x: bubbleX, y: bubbleY, w: bubbleW, h: bubbleH, tailY })}
   ${titleSvg}
-  ${summarySvg}
   ${bulbySvg(bulbyX, bulbyY, bulbyScale)}
-  ${footerStrip(date)}
+  ${footerStrip(font, date)}
 </svg>`;
 }
 
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
+  const font = opentype.parse((await fs.readFile(FONT_PATH)).buffer);
+
   const files = (await fs.readdir(BLOG_DIR)).filter(f => f.endsWith('.md'));
   const summary = [];
 
@@ -280,12 +277,12 @@ async function main() {
     const slug = file.replace(/\.md$/, '');
     const raw = await fs.readFile(path.join(BLOG_DIR, file), 'utf8');
     const fm = parseFrontmatter(raw);
-    if (!fm.title || !fm.summary) {
-      console.warn(`! skipping ${file}: missing title/summary`);
+    if (!fm.title) {
+      console.warn(`! skipping ${file}: missing title`);
       continue;
     }
     const dateStr = (fm.date || '').toString().slice(0, 10).replace(/-/g, '.');
-    const svg = buildSvg({ title: fm.title, summary: fm.summary, date: dateStr });
+    const svg = buildSvg({ title: fm.title, date: dateStr, font });
     const outPath = path.join(OUT_DIR, `${slug}.png`);
     await sharp(Buffer.from(svg)).png().toFile(outPath);
     summary.push({ slug, outPath });
