@@ -1,7 +1,7 @@
 ---
 title: "Claude Code Advisor — Sonnet by Default, Opus on Demand"
 summary: "ใช้ Sonnet เป็น model หลัก แล้วให้ Opus คอยช่วยเฉพาะตอนที่งานยาก — ได้ผลใกล้เคียง Opus โดยไม่ต้องจ่ายราคา Opus ตลอดเวลา"
-date: 2026-05-22
+date: 2026-05-20
 tags: ["ai-coding", "claude", "claude-code"]
 ---
 

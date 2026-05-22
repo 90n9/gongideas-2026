@@ -1,7 +1,7 @@
 ---
 title: "Claude Code /tui — Sticky or Scrolling Input"
 summary: "เลือกได้ว่าจะให้ช่องพิมพ์ของ Claude Code ปักก้นจอ หรือไหลตาม message"
-date: 2026-05-22
+date: 2026-05-21
 tags: ["ai-coding", "claude", "claude-code"]
 ---
 
