@@ -21,6 +21,8 @@ tags: ["ai-coding", "claude", "claude-code"]
 
 จากนั้น Claude จะ escalate ขึ้นหา Opus เองโดยอัตโนมัติเมื่อจำเป็น ไม่ต้องสั่งทุกครั้ง
 
+<img src="/assets/blog-advisor-in-action.png" alt="Claude Code terminal showing Advisor in action: 'Advising using Opus 4.7 — Advisor has reviewed the conversation and will apply the feedback', while the main session runs on Sonnet 4.6." />
+
 > Anthropic แนะนำ setup นี้เองว่า Sonnet as the main model with Opus as the advisor — for certain workloads this gives near-Opus performance with reduced token usage.
 
 ## ทำไมถึงประหยัด
