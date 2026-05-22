@@ -11,18 +11,23 @@ tags: ["ai-coding", "claude", "claude-code"]
 
 ## วิธีใช้
 
-พิมพ์ `/tui` ใน Claude Code แล้วเลือกโหมด
+พิมพ์ `/tui` เฉย ๆ (ไม่ต้องใส่ argument) เพื่อเช็คว่าตอนนี้ใช้โหมดไหนอยู่ — Claude Code จะบอกกลับมาว่า `Current renderer: fullscreen` หรือ `Current renderer: default` พร้อม usage hint
 
-setting จะถูก save ลง `settings.json` ให้เอง ตั้งครั้งเดียวก็อยู่ยาว ไม่ต้องตั้งใหม่ทุก session
+![/tui แสดง current renderer](/assets/blog-tui-current-renderer.png)
 
+ถ้าอยากสลับ ก็พิมพ์ `/tui default` หรือ `/tui fullscreen` ต่อได้เลย
 ## สองโหมด
 
 **Fullscreen** — ช่องพิมพ์ปักอยู่ก้นจอตลอดเหมือนแอปแชต ข้อความเก่าไหลขึ้นไปข้างบน แต่ input อยู่ที่เดิมไม่ขยับ จอไม่กะพริบเวลา AI พิมพ์ตอบยาว ๆ เหมาะกับคนที่ชอบ workflow แบบ chat app
 
+![Fullscreen mode](/assets/blog-tui-fullscreen-mode.png)
+
 **Default** — ช่องพิมพ์อยู่ต่อท้าย message ล่าสุด เลื่อนลงไปเรื่อย ๆ ตามที่ AI ตอบ ใช้ scroll ของ terminal ย้อนดูได้ตามปกติ และ copy ข้อความเก่าได้ง่ายกว่า เหมาะกับคนที่อยากอ่าน log แบบ flow ยาว ๆ
+
+![Default mode](/assets/blog-tui-default-mode.png)
 
 ## เลือกอันไหนดี
 
-ลองทั้งสองแล้วเลือกที่ถูกจริต — ไม่มีถูกผิด
+ลองดูเลยว่าชอบแบบไหน
 
-ส่วนตัวผมชอบ Fullscreen เพราะให้ความรู้สึกเหมือนคุยแชต ตาไม่ต้องวิ่งตามหา input box เวลา AI ตอบยาว ๆ แต่ถ้าวันไหนต้องย้อนไป copy code block เก่า ๆ เยอะ ๆ ก็สลับกลับมา Default ได้ตลอด
+ส่วนตัวผมใช้ Fullscreen เพราะ scroll ขึ้นไปอ่าน output ด้านบนได้สะดวก แล้วกดกลับลงมาต่อได้ทันที — ไม่ต้องหา input box ใหม่ พิมพ์ต่อได้เลยแม้จะเพิ่งเลื่อนขึ้นไปอ่านอะไรอยู่
