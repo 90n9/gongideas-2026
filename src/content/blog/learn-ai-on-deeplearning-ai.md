@@ -1,8 +1,9 @@
 ---
 title: "Learn AI Hands-On at deeplearning.ai"
 summary: "คอร์ส AI สั้น ๆ ฟรี ๆ ความยาวประมาณ 1 ชั่วโมง จาก Andrew Ng และพาร์ตเนอร์ — เรียนพร้อมเขียนโค้ดจริง ไม่ใช่นั่งฟังทฤษฎีอย่างเดียว"
-date: 2026-05-22
+date: 2026-05-27
 tags: ["ai-coding", "learning"]
+draft: true
 ---
 
 ช่วงนี้ใครอยากเริ่มเรียน AI หรืออัปเดต skill ด้านนี้ — มีอีกเว็บที่ผมอยากแนะนำคือ **[learn.deeplearning.ai](https://learn.deeplearning.ai/)**
