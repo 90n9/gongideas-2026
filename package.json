@@ -8,7 +8,9 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "og": "node scripts/generate-og.mjs",
+    "prebuild": "npm run og"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.0",

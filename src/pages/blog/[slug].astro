@@ -34,7 +34,7 @@ if (data.relatedIdea) {
   related = (await getEntry('ideas', data.relatedIdea)) ?? null;
 }
 
-const canonicalImage = data.heroImage ?? '/og-default.png';
+const canonicalImage = data.heroImage ?? `/og/${id}.png`;
 const siteOrigin = Astro.site ?? new URL('https://gongideas.com/');
 const blogJsonLd = {
   '@context': 'https://schema.org',
