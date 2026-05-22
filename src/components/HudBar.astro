@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 const ideas = await getCollection('ideas');
-const posts = await getCollection('blog');
+const posts = await getCollection('blog', ({ data }) => !data.draft);
 
 type Latest = { kind: 'IDEA' | 'POST'; title: string; href: string; date: Date };
 
