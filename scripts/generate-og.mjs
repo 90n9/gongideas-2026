@@ -281,10 +281,6 @@ async function main() {
       console.warn(`! skipping ${file}: missing title`);
       continue;
     }
-    if (fm.draft === 'true' || fm.draft === true) {
-      console.log(`· skipping ${file}: draft`);
-      continue;
-    }
     const dateStr = (fm.date || '').toString().slice(0, 10).replace(/-/g, '.');
     const svg = buildSvg({ title: fm.title, date: dateStr, font });
     const outPath = path.join(OUT_DIR, `${slug}.png`);
