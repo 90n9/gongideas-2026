@@ -3,7 +3,6 @@ title: "What is a Skill in AI Coding?"
 summary: "ทำความรู้จักกับ \"Skill\" — แพ็คคำสั่ง/workflow ที่โหลดเข้า AI coding tool ของคุณได้ในคลิกเดียว และที่ที่ใช้ค้นหา skill ใหม่ ๆ"
 date: 2026-05-23
 tags: ["ai-coding", "skills"]
-draft: true
 ---
 
 ช่วงนี้คำว่า **Skill** เริ่มได้ยินบ่อยมากในวงการ AI coding — แต่จริง ๆ แล้วมันคืออะไร? ทำไมถึงควรรู้จักไว้?
