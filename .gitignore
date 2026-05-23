@@ -154,3 +154,7 @@ vite.config.ts.timestamp-*
 
 # Stale single-file design exploration (kept locally for reference)
 gongideas-redesign/_screenshots/
+
+# Claude Code skills installed from registry (tracked via skills-lock.json)
+.claude/skills/skill-creator
+.agents/
