@@ -1,9 +1,9 @@
 ---
 const year = new Date().getFullYear();
 const links = [
-  { label: 'GITHUB',   href: 'https://github.com/90n9' },
-  { label: 'FACEBOOK', href: 'https://www.facebook.com/profile.php?id=61583997504846' },
-  { label: 'LINKEDIN', href: 'https://www.linkedin.com/in/narathip-harijiratiwong-a96a0683/' },
+  { label: 'GITHUB',   href: 'https://github.com/90n9', external: true },
+  { label: 'FACEBOOK', href: 'https://www.facebook.com/profile.php?id=61583997504846', external: true },
+  { label: 'LINKEDIN', href: 'https://www.linkedin.com/in/narathip-harijiratiwong-a96a0683/', external: true },
   { label: 'RSS',      href: '/rss.xml' },
 ];
 ---
@@ -15,13 +15,13 @@ const links = [
         <div class="copy">© {year} GongIdeas · Let's imagine come true.</div>
       </div>
       <div class="footer-links">
-        {links.map(l => <a href={l.href}>{l.label}</a>)}
+        {links.map(l => <a href={l.href} {...l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}>{l.label}</a>)}
       </div>
     </div>
 
     <div class="save-strip">
       <span><span class="l">▶ MISSION.</span> &nbsp;Imagine. Build. Ship. Repeat.</span>
-      <span>v0.1.0</span>
+      <span>v0.1.1</span>
     </div>
   </div>
 </footer>
