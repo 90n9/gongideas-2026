@@ -3,7 +3,6 @@ title: "Create Your Own Skill"
 summary: "ไม่ต้องเขียน skill เองตั้งแต่ศูนย์ — แค่บอก skill-creator ว่า \"เอา task ที่เพิ่งทำเสร็จไปแพ็คเป็น skill ให้หน่อย\" แล้วมันแพ็คให้ทั้งโครงสร้างไฟล์"
 date: 2026-05-24
 tags: ["ai-coding", "skills"]
-draft: true
 ---
 
 > ถ้ายังไม่รู้ว่า skill คืออะไร อ่าน [What is a Skill in AI Coding?](/blog/what-is-a-skill-in-ai-coding/) ก่อนได้ครับ

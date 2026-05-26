@@ -3,7 +3,6 @@ title: "Anthropic's Free Course on Agent Skills"
 summary: "ผมเพิ่งเรียนจบ — คอร์สฟรีจาก Anthropic ที่สอนเรื่อง agent skills ตั้งแต่พื้นฐานยันลึก ถ้าอยากเข้าใจมากขึ้นกว่าที่ผมเขียนใน blog ลองดูตัวนี้ครับ"
 date: 2026-05-25
 tags: ["ai-coding", "skills", "learning"]
-draft: true
 ---
 
 > สองโพสต์ก่อนหน้าผมเล่าว่า [skill คืออะไร](/blog/what-is-a-skill-in-ai-coding/) และ [วิธีสร้าง skill ของตัวเอง](/blog/create-your-own-skill/) ไปแล้ว ใครอยากเข้าใจให้ลึกขึ้นกว่านั้นอีก โพสต์นี้น่าสนใจ
