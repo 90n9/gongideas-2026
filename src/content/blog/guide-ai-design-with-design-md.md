@@ -3,7 +3,6 @@ title: "Guide AI Design With a design.md File"
 summary: "อีกวิธีคุมหน้าตางาน design ของ AI — โหลด design.md จากเว็บดัง ๆ มาวางในโปรเจกต์ แล้วบอก AI ให้อ้างอิงตัวนี้ทุกครั้ง ทั้งโปรเจกต์เลยมี style เดียวกัน"
 date: 2026-05-26
 tags: ["ai-coding", "design"]
-draft: true
 ---
 
 ก่อนหน้านี้ผมเล่าเรื่อง [Huashu Design skill](/blog/building-this-site-with-ai/) ที่ใช้ทำเว็บนี้ไปแล้ว — วันนี้อยากแชร์อีกวิธีในการคุม design ของ AI ให้ออกมาดี
