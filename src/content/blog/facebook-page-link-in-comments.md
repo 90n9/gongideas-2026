@@ -1,9 +1,8 @@
 ---
 title: "Why Facebook Pages Say Link in Comments"
 summary: "เพจ Facebook ฟรีโพสต์ลิงก์ได้แค่ 4 ครั้งต่อเดือน — นั่นคือเหตุผลจริง ๆ ที่เพจดัง ๆ ชอบบอกว่า 'ลิงก์อยู่ในคอมเมนต์'"
-date: 2026-05-27
+date: 2026-05-28
 tags: ["automation", "facebook"]
-draft: true
 ---
 
 ผมเพิ่งไปเจอข้อจำกัดนี้ตอนที่พยายาม automate การโพสต์บทความจาก GongIdeas ลง Facebook page ครับ
