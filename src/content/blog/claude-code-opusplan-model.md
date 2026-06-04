@@ -3,7 +3,6 @@ title: "Claude Code /model opusplan — Opus วางแผน, Sonnet ลง�
 summary: "ใช้ opusplan แล้ว Claude Code จะให้ Opus ทำเฉพาะตอน Plan Mode แล้วสลับไปใช้ Sonnet ตอนเขียนโค้ดอัตโนมัติ — ประหยัด quota Opus แบบไม่ต้องสลับ model เอง"
 date: 2026-05-28
 tags: ["ai-coding", "claude", "claude-code"]
-draft: true
 ---
 
 ถ้าใช้ **Claude Code** แบบ subscription (Pro/Max) จะรู้ดีว่า Opus มี quota แยกจาก Sonnet และหมดเร็วกว่ามาก เพราะแพงกว่าประมาณ 5 เท่า แต่ถ้าใช้ Sonnet ตลอด งานวางแผนยาก ๆ ก็จะคิดไม่ค่อยรอบคอบเท่า
